@@ -1,5 +1,5 @@
 # micetweaks v0.9
-Mouse/touchpad helper for Linux.
+Mouse/touchpad helper and detector for Linux.
 
 When you're using multiple pointers you can set individual configs (speed and deacceleration) to them. Must have especially when using KDE, where you can set mouse acceleration only.
 It detects when device is plugged into the USB port and sets individual config to it.
