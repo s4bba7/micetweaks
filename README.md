@@ -15,3 +15,4 @@ Example: ETPS/2 Elantech Touchpad|1.1|2.0
 Speed and deacceleration may be assign in floating point number. Recommended values are 1.1 and 2.0
 
 Dependency: xinput package.
+Used library: usb4java -> https://github.com/usb4java/ written by Klaus Reimer.
