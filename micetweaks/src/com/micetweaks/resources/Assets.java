@@ -10,6 +10,7 @@ import java.util.HashSet;
  *
  */
 public class Assets {
+	public static final String			TITLE				= "Micetweaks";
 	/** Parent path to this application. */
 	private static String				PATH;
 	private static File					HOTPLUG_CONF;
