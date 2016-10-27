@@ -5,7 +5,6 @@ import com.micetweaks.resources.Assets;
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -19,31 +18,31 @@ public class Main {
 		// Load the config.
 		Config.load();
 
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override public void run() {
-				// Init theme.
-				try {
-					BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
-					BeautyEyeLNFHelper.launchBeautyEyeLNF();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				// Init frame.
-				frame = new DevFrame(Assets.TITLE);
-				frame.prepare();
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setBounds(100, 100, 0, 0);
-				frame.setResizable(true);
-				frame.setVisible(true);
-				frame.pack();
+		SwingUtilities.invokeLater(() -> {
+			// Init theme.
+			try {
+				BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
+				BeautyEyeLNFHelper.launchBeautyEyeLNF();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+
+			// Init frame.
+			frame = new DevFrame(Assets.TITLE);
+			frame.prepare();
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setBounds(100, 100, 0, 0);
+			frame.setResizable(true);
 		});
 
 		HotPlug hotplug = new HotPlug();
 		hotplug.detectUsbDevices(false);
-		SwingUtilities.invokeAndWait(() -> frame.paintComponents());
+		SwingUtilities.invokeLater(() -> {
+			frame.paint();
+			frame.setVisible(true);
+		});
 
+		// Start the usb hotplug monitor.
 		Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
 		BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		String s;
@@ -54,7 +53,7 @@ public class Main {
 				if (s.contains("add")) hotplug.detectUsbDevices(false);
 				else hotplug.detectUsbDevices(true);
 
-				SwingUtilities.invokeAndWait(() -> frame.paintComponents());
+				SwingUtilities.invokeAndWait(() -> frame.paint());
 			}
 		}
 	}

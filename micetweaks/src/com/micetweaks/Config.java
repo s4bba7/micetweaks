@@ -3,7 +3,6 @@ package com.micetweaks;
 import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import com.micetweaks.resources.Assets;
 
@@ -29,6 +28,7 @@ public class Config {
 			}
 		} catch (Exception e) {
 			Assets.getHOTPLUG_CONF().delete();
+			Assets.DEVICES_LIST.clear();
 		}
 	}
 
@@ -39,5 +39,21 @@ public class Config {
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Assets.getHOTPLUG_CONF()));
 		out.writeObject(Assets.DEVICES_LIST);
 		out.close();
+	}
+
+	/**
+	 * Applys config file by invoking "xinput set-props" command for every device in this config.
+	 */
+	public static void apply() {
+		Assets.DEVICES_LIST.entrySet().stream().forEach(a -> {
+			DeviceProps props = a.getValue();
+			try {
+				Commands.setProp(props.getIds(), props.getSpeed(), props.getDeceleration());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		});
 	}
 }
