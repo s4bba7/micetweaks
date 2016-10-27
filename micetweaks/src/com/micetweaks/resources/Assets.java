@@ -1,30 +1,31 @@
 package com.micetweaks.resources;
 
+import com.micetweaks.DeviceProps;
+import com.micetweaks.Main;
+
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
  * Stores global variables.
- * 
- * @author Łukasz 's4bba7' Gąsiorowski
  *
+ * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Assets {
-	public static final String			TITLE				= "Micetweaks";
-	/** Parent path to this application. */
-	private static String				PATH;
-	private static File					HOTPLUG_CONF;
-	private static File					STARTUP_CONF;
-	public final static File			DEVICES_BUS_PATH	= new File("/proc/bus/input/devices");
-	public final static HashSet<String>	HOTPLUG_LIST		= new HashSet<>();
-	public final static HashSet<String>	STARTUP_LIST		= new HashSet<>();
+	public static final String                       TITLE              = "Micetweaks";
+	// Stores remembered devices.
+	public final static HashSet<String>              SAVED_DEVICES_LIST = new HashSet<>();
+	// Stores all connected devices.
+	public static       HashMap<String, DeviceProps> DEVICES_LIST       = new HashMap<>();
+	// Parent path to this application.
+	private static String PATH;
+	private static File   HOTPLUG_CONF;
 
 	static {
-		PATH = Assets.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		PATH = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 		PATH = new File(PATH).getParent();
 		HOTPLUG_CONF = new File(PATH + "/hotplug.conf");
-		STARTUP_CONF = new File(PATH + "/startup.conf");
-
 	}
 
 	/**
@@ -34,10 +35,4 @@ public class Assets {
 		return HOTPLUG_CONF;
 	}
 
-	/**
-	 * @return configuration file "startup.conf"
-	 */
-	public static File getSTARTUP_CONF() {
-		return STARTUP_CONF;
-	}
 }

@@ -1,75 +1,62 @@
 package com.micetweaks;
 
-import org.usb4java.HotplugCallbackHandle;
-import org.usb4java.LibUsb;
-import org.usb4java.LibUsbException;
+import com.micetweaks.gui.DevFrame;
+import com.micetweaks.resources.Assets;
+import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
-import com.micetweaks.HotPlug.Callback;
-import com.micetweaks.HotPlug.EventHandlingThread;
-import com.micetweaks.Mode.STATE;
+import javax.swing.*;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
- * @author Klaus Reimer <k@ailis.de>. Modded by Łukasz 's4bba7' Gąsiorowski.
+ * @author Łukasz 's4bba7' Gąsiorowski.
  */
 public class Main {
+	private static DevFrame frame;
 
 	public static void main(String[] args) throws Exception {
-
-		// Check application mode
-		if (args.length > 0 && args[0].equalsIgnoreCase(STATE.SETUP.toString())) {
-			Mode.setState(STATE.SETUP);
-		} else Mode.setState(STATE.NORMAL);
-
-		// Load the config
+		// Load the config.
 		Config.load();
 
-		System.out.print(Mode.getState().toString().toUpperCase() + " MODE.");
-		if (Mode.getState().toString().equalsIgnoreCase(STATE.NORMAL.toString())) {
-			System.out.println(" Hit enter to exit the application.");
-			// Launch startup config. Needed for touchpads etc.
-			Event.launchStartupConfig();
-		} else System.out.println();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override public void run() {
+				// Init theme.
+				try {
+					BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
+					BeautyEyeLNFHelper.launchBeautyEyeLNF();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-		// Initialize the libusb context
-		int result = LibUsb.init(null);
-		if (result != LibUsb.SUCCESS) { throw new LibUsbException("Unable to initialize libusb",
-				result); }
+				// Init frame.
+				frame = new DevFrame(Assets.TITLE);
+				frame.prepare();
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setBounds(100, 100, 0, 0);
+				frame.setResizable(true);
+				frame.setVisible(true);
+				frame.pack();
+			}
+		});
 
-		// Check if hotplug is available
-		if (!LibUsb.hasCapability(LibUsb.CAP_HAS_HOTPLUG)) {
-			System.err.println("libusb doesn't support hotplug on this system");
-			System.exit(1);
+		HotPlug hotplug = new HotPlug();
+		hotplug.detectUsbDevices(false);
+		SwingUtilities.invokeAndWait(() -> frame.paintComponents());
+
+		Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
+		BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		String s;
+		while ((s = in.readLine()) != null) {
+			if (s.contains("mouse")) {
+				// Wait for system callback.
+				Thread.sleep(1000);
+				if (s.contains("add")) hotplug.detectUsbDevices(false);
+				else hotplug.detectUsbDevices(true);
+
+				SwingUtilities.invokeAndWait(() -> frame.paintComponents());
+			}
 		}
-
-		// Start the event handling thread
-		EventHandlingThread thread = new EventHandlingThread();
-		thread.start();
-
-		// Register the hotplug callback
-		HotplugCallbackHandle callbackHandle = new HotplugCallbackHandle();
-		result = LibUsb.hotplugRegisterCallback(null,
-				LibUsb.HOTPLUG_EVENT_DEVICE_ARRIVED | LibUsb.HOTPLUG_EVENT_DEVICE_LEFT,
-				LibUsb.HOTPLUG_ENUMERATE, LibUsb.HOTPLUG_MATCH_ANY, LibUsb.HOTPLUG_MATCH_ANY,
-				LibUsb.HOTPLUG_MATCH_ANY, new Callback(), null, callbackHandle);
-		if (result != LibUsb.SUCCESS) { throw new LibUsbException(
-				"Unable to register hotplug callback", result); }
-
-		if (Mode.getState().toString().equalsIgnoreCase(STATE.SETUP.toString())) {
-			System.out.println(
-					"Setup is finished. You may now restart the app without any arguments.");
-		} else {
-			// Exit the application.
-			System.in.read();
-			System.out.println("BYE!");
-		}
-
-		// Unregister the hotplug callback and stop the event handling thread
-		thread.abort();
-		LibUsb.hotplugDeregisterCallback(null, callbackHandle);
-		thread.join();
-
-		// Deinitialize the libusb context
-		LibUsb.exit(null);
 	}
 
 }
