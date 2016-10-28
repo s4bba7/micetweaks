@@ -14,13 +14,13 @@ import java.util.Map;
 /**
  * author Łukasz 's4bba7' Gąsiorowski
  */
-class HotPlug {
+public class HotPlug {
 	/**
 	 * Detects plugged in devices and adds or removes them from Assets.DEVICES_LIST.
 	 *
 	 * @param removeFlag if device is plugged off it additionally remove that device from list.
 	 */
-	public void detectUsbDevices(boolean removeFlag) {
+	public static void detectUsbDevices(boolean removeFlag) {
 		String buff;
 		Process p = xinputExecute();
 		HashSet<String> devNameBuff = new HashSet<>();
@@ -67,7 +67,7 @@ class HotPlug {
 
 	}
 
-	private Process xinputExecute() {
+	private static Process xinputExecute() {
 		Process p = null;
 		try {
 			p = Runtime.getRuntime().exec("xinput");

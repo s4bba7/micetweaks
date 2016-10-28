@@ -17,43 +17,34 @@ public class Config {
 	/**
 	 * Loads configuration file of the devices into hashset - SAVED_DEVICES_LIST.
 	 */
-	public static void load() {
+	public static HashMap<String, DeviceProps> load() {
+		HashMap<String, DeviceProps> map = null;
 		try {
 			if (Assets.getHOTPLUG_CONF().exists()) {
 				ObjectInputStream in = new ObjectInputStream(new FileInputStream(Assets.getHOTPLUG_CONF()));
-				Assets.DEVICES_LIST = (HashMap<String, DeviceProps>) in.readObject();
+				map = (HashMap<String, DeviceProps>) in.readObject();
 				in.close();
 			} else {
+				map = new HashMap<>();
 				Assets.getHOTPLUG_CONF().createNewFile();
 			}
 		} catch (Exception e) {
 			Assets.getHOTPLUG_CONF().delete();
-			Assets.DEVICES_LIST.clear();
+			map = new HashMap<>();
 		}
+		return map;
 	}
 
 	/**
 	 * Saves devices configuration.
 	 */
 	public static void save() throws IOException {
+		HashMap<String, DeviceProps> conf = load();
+		// Merge old config with new one.
+		conf.putAll(Assets.DEVICES_LIST);
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Assets.getHOTPLUG_CONF()));
-		out.writeObject(Assets.DEVICES_LIST);
+		out.writeObject(conf);
 		out.close();
 	}
 
-	/**
-	 * Applys config file by invoking "xinput set-props" command for every device in this config.
-	 */
-	public static void apply() {
-		Assets.DEVICES_LIST.entrySet().stream().forEach(a -> {
-			DeviceProps props = a.getValue();
-			try {
-				Commands.setProp(props.getIds(), props.getSpeed(), props.getDeceleration());
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		});
-	}
 }

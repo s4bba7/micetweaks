@@ -16,6 +16,14 @@ public class Main {
 	private static DevFrame frame;
 
 	public static void main(String[] args) {
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				Config.save();
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Cannot save the config file. See the log:\n" + e.getMessage());
+			}
+		}));
+
 		// Init theme.
 		try {
 			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
@@ -43,11 +51,10 @@ public class Main {
 		});
 
 		// Load the config.
-		Config.load();
+		Assets.DEVICES_LIST = Config.load();
 
 		// Looks for the already connected devices.
-		HotPlug hotplug = new HotPlug();
-		hotplug.detectUsbDevices(false);
+		HotPlug.detectUsbDevices(false);
 		SwingUtilities.invokeLater(() -> {
 			frame.paint();
 			frame.setVisible(true);
@@ -62,15 +69,14 @@ public class Main {
 				if (s.contains("mouse")) {
 					// Wait for system callback.
 					Thread.sleep(1000);
-					if (s.contains("add")) hotplug.detectUsbDevices(false);
-					else hotplug.detectUsbDevices(true);
+					if (s.contains("add")) HotPlug.detectUsbDevices(true);
+					else HotPlug.detectUsbDevices(true);
 
 					SwingUtilities.invokeAndWait(() -> frame.paint());
 				}
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null,
-					"Cannot start the application. See the log:\n" + e.getMessage());
+			JOptionPane.showMessageDialog(null, "Cannot start the application. See the log:\n" + e.getMessage());
 			System.exit(1);
 		}
 	}

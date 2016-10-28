@@ -13,14 +13,12 @@ import java.util.HashSet;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Assets {
-	public static final String                       TITLE              = "Micetweaks";
-	// Stores remembered devices.
-	public final static HashSet<String>              SAVED_DEVICES_LIST = new HashSet<>();
+	public static final String TITLE = "Micetweaks";
 	// Stores all connected devices.
-	public static       HashMap<String, DeviceProps> DEVICES_LIST       = new HashMap<>();
+	public static  HashMap<String, DeviceProps> DEVICES_LIST;
 	// Parent path to this application.
-	private static String PATH;
-	private static File   HOTPLUG_CONF;
+	private static String                       PATH;
+	private static File                         HOTPLUG_CONF;
 
 	static {
 		PATH = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
