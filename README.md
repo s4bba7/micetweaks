@@ -1,5 +1,7 @@
 Mouse and touchpad automatic detector and sensitivity setter for Linux.
 
+Ready to run: http://gasionet.pl/app/Micetweaks.jar
+
 Application detects the moment when device is plugged into the USB port and sets individual config (speed and deceleration) to it.
 Of course it may be used when using one mouse only.
 "Must have app" especially when using KDE, where you can set mouse acceleration only.
