@@ -1,21 +1,17 @@
 package com.micetweaks.gui;
 
-import com.micetweaks.Config;
-import com.micetweaks.HotPlug;
 import com.micetweaks.resources.Assets;
-import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 /**
- * Created by s4bba7 on 12.10.16.
+ * Application main frame.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DevFrame extends JFrame {
-	private JPanel  devices = new JPanel();
+	private JPanel devices = new JPanel();
 
 	public DevFrame(String title) {
 		super(title);
@@ -26,6 +22,9 @@ public class DevFrame extends JFrame {
 		devices.setLayout(new GridLayout(0, 1));
 	}
 
+	/**
+	 * Add devices to program's frame, repaint and resize the component.
+	 */
 	public void paint() {
 		devices.removeAll();
 		Assets.DEVICES_LIST.entrySet().stream().forEach(e -> {
@@ -36,7 +35,6 @@ public class DevFrame extends JFrame {
 		add(devices, BorderLayout.CENTER);
 
 		SwingUtilities.invokeLater(() -> {
-			repaint();
 			pack();
 		});
 	}

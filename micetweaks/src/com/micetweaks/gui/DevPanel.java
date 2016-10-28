@@ -2,15 +2,24 @@ package com.micetweaks.gui;
 
 import com.micetweaks.Commands;
 import com.micetweaks.DeviceProps;
+import com.micetweaks.Log;
 import com.micetweaks.resources.Assets;
 
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
+/**
+ * Stores device regulators.
+ *
+ * @author Łukasz 's4bba7' Gąsiorowski
+ */
 public class DevPanel extends JPanel implements MouseListener {
 	private double       speed;
 	private double       deceleration;
@@ -77,11 +86,9 @@ public class DevPanel extends JPanel implements MouseListener {
 	}
 
 	@Override public void mouseClicked(MouseEvent e) {
-
 	}
 
 	@Override public void mousePressed(MouseEvent e) {
-
 	}
 
 	@Override public void mouseReleased(MouseEvent e) {
@@ -89,22 +96,25 @@ public class DevPanel extends JPanel implements MouseListener {
 	}
 
 	@Override public void mouseEntered(MouseEvent e) {
-
 	}
 
 	@Override public void mouseExited(MouseEvent e) {
-
 	}
 
+	/**
+	 * Set speed and deceleration for the desired device.
+	 *
+	 * @param name device's name.
+	 */
 	private void setProps(String name) {
 		DeviceProps props = Assets.DEVICES_LIST.get(name);
 		try {
 			Commands.setProp(props.getIds(), speed, deceleration);
 			props.setSpeed(speed);
 			props.setDeceleration(deceleration);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} catch (InterruptedException e1) {
+		} catch (IOException | InterruptedException e1) {
+			Log.write(e1.getMessage());
+			JOptionPane.showMessageDialog(null, "Error. Cannot use this setting:\n" + e1.getMessage());
 			e1.printStackTrace();
 		}
 	}

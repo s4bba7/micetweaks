@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 
 /**
- * Created on 11.10.16.
  * Stores device variables.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
@@ -14,6 +13,9 @@ public class DeviceProps implements Serializable {
 	private double speed;
 	private double deceleration;
 
+	/**
+	 * @param id device's identification number taken from "xinput" command.
+	 */
 	public DeviceProps(int id) {
 		this.ids.add(id);
 	}

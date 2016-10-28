@@ -1,24 +1,24 @@
 package com.micetweaks;
 
-import com.micetweaks.gui.DevFrame;
 import com.micetweaks.resources.Assets;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.management.ManagementFactory;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * Invoked events on connecting/disconnecting devices.
+ * <p>
  * author Łukasz 's4bba7' Gąsiorowski
  */
 public class HotPlug {
 	/**
 	 * Detects plugged in devices and adds or removes them from Assets.DEVICES_LIST.
 	 *
-	 * @param removeFlag if device is plugged off it additionally remove that device from list.
+	 * @param removeFlag device might be plugged off so mark it TRUE to additionally remove that device from list.
 	 */
 	public static void detectUsbDevices(boolean removeFlag) {
 		String buff;
@@ -61,6 +61,7 @@ public class HotPlug {
 					}
 				}
 			} catch (IOException e) {
+				Log.write(e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -73,6 +74,7 @@ public class HotPlug {
 			p = Runtime.getRuntime().exec("xinput");
 			p.waitFor();
 		} catch (IOException | InterruptedException e) {
+			Log.write(e.getMessage());
 			e.printStackTrace();
 		}
 		return p;

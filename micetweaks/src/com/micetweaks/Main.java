@@ -16,6 +16,7 @@ public class Main {
 	private static DevFrame frame;
 
 	public static void main(String[] args) {
+		// Save config at program shutdown.
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			try {
 				Config.save();
@@ -44,8 +45,8 @@ public class Main {
 			System.exit(1);
 		}
 
+		// Init frame.
 		SwingUtilities.invokeLater(() -> {
-			// Init frame.
 			frame = new DevFrame(Assets.TITLE);
 			frame.prepare();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,7 +57,7 @@ public class Main {
 		// Load the config.
 		Assets.DEVICES_LIST = Config.load();
 
-		// Looks for the already connected devices.
+		// Look for the already connected devices.
 		HotPlug.detectUsbDevices(false);
 		SwingUtilities.invokeLater(() -> {
 			frame.paint();

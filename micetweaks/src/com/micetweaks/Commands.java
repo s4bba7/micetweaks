@@ -1,21 +1,15 @@
 package com.micetweaks;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import com.micetweaks.resources.Assets;
-
 /**
- * Linux wrapped commands for USB devices.
+ * Linux commands for USB devices.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Commands {
-
 	/**
 	 * Sets devices properties by calling "xinput set-prop" command.
 	 *
@@ -51,6 +45,12 @@ public class Commands {
 		Runtime.getRuntime().exec(command);
 	}
 
+	/**
+	 * Checks system is having "xinput" and "udevadm" packages. If not throw exception.
+	 *
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static void checkSystemDependency() throws IOException, InterruptedException {
 		Process p = Runtime.getRuntime().exec("xinput");
 		p = Runtime.getRuntime().exec(new String[] { "udevadm", "--help" });

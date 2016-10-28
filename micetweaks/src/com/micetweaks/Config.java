@@ -1,10 +1,9 @@
 package com.micetweaks;
 
+import com.micetweaks.resources.Assets;
+
 import java.io.*;
 import java.util.HashMap;
-import java.util.HashSet;
-
-import com.micetweaks.resources.Assets;
 
 /**
  * Keeps configuration of the program.
@@ -12,10 +11,10 @@ import com.micetweaks.resources.Assets;
  * @author Łukasz 's4bba7' Gąsiorowski.
  */
 public class Config {
-	private static HashSet<String> devlistTemp = new HashSet<>();
-
 	/**
-	 * Loads configuration file of the devices into hashset - SAVED_DEVICES_LIST.
+	 * Loads configuration file.
+	 *
+	 * @return hashmap object if file exists. Otherwise returns empty hashmap.
 	 */
 	public static HashMap<String, DeviceProps> load() {
 		HashMap<String, DeviceProps> map = null;
