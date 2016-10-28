@@ -14,24 +14,23 @@ import java.io.IOException;
 public class DevPanel extends JPanel implements MouseListener {
 	private double       speed;
 	private double       deceleration;
-	private JSlider      speedSlider;
-	private JSlider      decelSlider;
 	private TitledBorder nameBorder;
 	private TitledBorder speedBorder;
 	private TitledBorder decelBorder;
+	private JSlider     speedSlider = new JSlider(1, 50);
+	private JSlider     decelSlider = new JSlider(1, 50);
 	private JLabel      speedLabel  = new JLabel();
 	private JLabel      decelLabel  = new JLabel();
 	private Border      matteBorder = new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY);
 	private EmptyBorder emptyBorder = new EmptyBorder(16, 0, 0, 0);
 
 	public DevPanel(String name, double speed, double deceleration) {
-		if (speed < 0.1) this.speed = 0.1;
+		// Default values.
+		if (speed < 0.1) this.speed = 1.1;
 		else this.speed = speed;
-		if (deceleration < 0.1) this.deceleration = 0.1;
+		if (deceleration < 0.1) this.deceleration = 2.0;
 		else this.deceleration = deceleration;
 
-		speedSlider = new JSlider(1, 50);
-		decelSlider = new JSlider(1, 50);
 		nameBorder = BorderFactory.createTitledBorder(name);
 		speedBorder = BorderFactory.createTitledBorder("Speed  [" + speed + "]");
 		decelBorder = BorderFactory.createTitledBorder("Deceleration  [" + deceleration + "]");
