@@ -11,3 +11,5 @@ Every change is activated immediately. Config is saved at program's exit.
 
 
 Dependency: xinput package and udevadm.
+
+Theme: https://github.com/JackJiang2011/beautyeye/blob/master/README_en.md
