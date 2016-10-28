@@ -1,75 +1,88 @@
 package com.micetweaks;
 
-import org.usb4java.HotplugCallbackHandle;
-import org.usb4java.LibUsb;
-import org.usb4java.LibUsbException;
+import com.micetweaks.gui.DevFrame;
+import com.micetweaks.resources.Assets;
+import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
-import com.micetweaks.HotPlug.Callback;
-import com.micetweaks.HotPlug.EventHandlingThread;
-import com.micetweaks.Mode.STATE;
+import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
- * @author Klaus Reimer <k@ailis.de>. Modded by Łukasz 's4bba7' Gąsiorowski.
+ * @author Łukasz 's4bba7' Gąsiorowski.
  */
 public class Main {
+	private static DevFrame frame;
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
+		// Save config at program shutdown.
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				Config.save();
+			} catch (IOException e) {
+				Log.write(e.getMessage());
+				JOptionPane.showMessageDialog(null, "Cannot save the config file. See the log file.");
+			}
+		}));
 
-		// Check application mode
-		if (args.length > 0 && args[0].equalsIgnoreCase(STATE.SETUP.toString())) {
-			Mode.setState(STATE.SETUP);
-		} else Mode.setState(STATE.NORMAL);
+		// Init theme.
+		try {
+			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
+			BeautyEyeLNFHelper.launchBeautyEyeLNF();
+		} catch (Exception e) {
+			Log.write(e.getMessage());
+			e.printStackTrace();
+		}
 
-		// Load the config
-		Config.load();
-
-		System.out.print(Mode.getState().toString().toUpperCase() + " MODE.");
-		if (Mode.getState().toString().equalsIgnoreCase(STATE.NORMAL.toString())) {
-			System.out.println(" Hit enter to exit the application.");
-			// Launch startup config. Needed for touchpads etc.
-			Event.launchStartupConfig();
-		} else System.out.println();
-
-		// Initialize the libusb context
-		int result = LibUsb.init(null);
-		if (result != LibUsb.SUCCESS) { throw new LibUsbException("Unable to initialize libusb",
-				result); }
-
-		// Check if hotplug is available
-		if (!LibUsb.hasCapability(LibUsb.CAP_HAS_HOTPLUG)) {
-			System.err.println("libusb doesn't support hotplug on this system");
+		// Check host system for package dependency.
+		try {
+			Commands.checkSystemDependency();
+		} catch (IOException | InterruptedException e) {
+			Log.write(e.getMessage());
+			JOptionPane.showMessageDialog(null,
+					"Missing package dependencies. You need to install 'udevadm' and " + "'xinput' packages.");
 			System.exit(1);
 		}
 
-		// Start the event handling thread
-		EventHandlingThread thread = new EventHandlingThread();
-		thread.start();
+		// Init frame.
+		SwingUtilities.invokeLater(() -> {
+			frame = new DevFrame(Assets.TITLE);
+			frame.prepare();
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setBounds(100, 100, 0, 0);
+			frame.setResizable(true);
+		});
 
-		// Register the hotplug callback
-		HotplugCallbackHandle callbackHandle = new HotplugCallbackHandle();
-		result = LibUsb.hotplugRegisterCallback(null,
-				LibUsb.HOTPLUG_EVENT_DEVICE_ARRIVED | LibUsb.HOTPLUG_EVENT_DEVICE_LEFT,
-				LibUsb.HOTPLUG_ENUMERATE, LibUsb.HOTPLUG_MATCH_ANY, LibUsb.HOTPLUG_MATCH_ANY,
-				LibUsb.HOTPLUG_MATCH_ANY, new Callback(), null, callbackHandle);
-		if (result != LibUsb.SUCCESS) { throw new LibUsbException(
-				"Unable to register hotplug callback", result); }
+		// Load the config.
+		Assets.DEVICES_LIST = Config.load();
 
-		if (Mode.getState().toString().equalsIgnoreCase(STATE.SETUP.toString())) {
-			System.out.println(
-					"Setup is finished. You may now restart the app without any arguments.");
-		} else {
-			// Exit the application.
-			System.in.read();
-			System.out.println("BYE!");
+		// Look for the already connected devices.
+		HotPlug.detectUsbDevices(false);
+		SwingUtilities.invokeLater(() -> {
+			frame.paint();
+			frame.setVisible(true);
+		});
+
+		// Start the usb hotplug monitor.
+		try {
+			Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
+			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String s;
+			while ((s = in.readLine()) != null) {
+				if (s.contains("mouse")) {
+					// Wait for system callback.
+					Thread.sleep(1000);
+					if (s.contains("add")) HotPlug.detectUsbDevices(true);
+					else HotPlug.detectUsbDevices(true);
+
+					SwingUtilities.invokeAndWait(() -> frame.paint());
+				}
+			}
+		} catch (Exception e) {
+			Log.write(e.getMessage());
+			JOptionPane.showMessageDialog(null, "Cannot start the application. See the log:\n" + e.getMessage());
+			System.exit(1);
 		}
-
-		// Unregister the hotplug callback and stop the event handling thread
-		thread.abort();
-		LibUsb.hotplugDeregisterCallback(null, callbackHandle);
-		thread.join();
-
-		// Deinitialize the libusb context
-		LibUsb.exit(null);
 	}
-
 }
