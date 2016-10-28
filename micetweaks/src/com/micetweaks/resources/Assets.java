@@ -33,4 +33,8 @@ public class Assets {
 		return HOTPLUG_CONF;
 	}
 
+	public static String getAppPath() {
+		return PATH;
+	}
+
 }

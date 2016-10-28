@@ -20,7 +20,8 @@ public class Main {
 			try {
 				Config.save();
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Cannot save the config file. See the log:\n" + e.getMessage());
+				Log.write(e.getMessage());
+				JOptionPane.showMessageDialog(null, "Cannot save the config file. See the log file.");
 			}
 		}));
 
@@ -29,6 +30,7 @@ public class Main {
 			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
 			BeautyEyeLNFHelper.launchBeautyEyeLNF();
 		} catch (Exception e) {
+			Log.write(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -36,6 +38,7 @@ public class Main {
 		try {
 			Commands.checkSystemDependency();
 		} catch (IOException | InterruptedException e) {
+			Log.write(e.getMessage());
 			JOptionPane.showMessageDialog(null,
 					"Missing package dependencies. You need to install 'udevadm' and " + "'xinput' packages.");
 			System.exit(1);
@@ -76,6 +79,7 @@ public class Main {
 				}
 			}
 		} catch (Exception e) {
+			Log.write(e.getMessage());
 			JOptionPane.showMessageDialog(null, "Cannot start the application. See the log:\n" + e.getMessage());
 			System.exit(1);
 		}
