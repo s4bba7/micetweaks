@@ -45,6 +45,7 @@ public class Main {
 		// Load the config.
 		Config.load();
 
+		// Looks for the already connected devices.
 		HotPlug hotplug = new HotPlug();
 		hotplug.detectUsbDevices(false);
 		SwingUtilities.invokeLater(() -> {

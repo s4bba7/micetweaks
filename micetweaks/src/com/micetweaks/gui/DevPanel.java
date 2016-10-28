@@ -32,8 +32,8 @@ public class DevPanel extends JPanel implements MouseListener {
 		else this.deceleration = deceleration;
 
 		nameBorder = BorderFactory.createTitledBorder(name);
-		speedBorder = BorderFactory.createTitledBorder("Speed  [" + speed + "]");
-		decelBorder = BorderFactory.createTitledBorder("Deceleration  [" + deceleration + "]");
+		speedBorder = BorderFactory.createTitledBorder("Speed  [" + this.speed + "]");
+		decelBorder = BorderFactory.createTitledBorder("Deceleration  [" + this.deceleration + "]");
 	}
 
 	public void prepare() {
@@ -71,6 +71,9 @@ public class DevPanel extends JPanel implements MouseListener {
 
 		add(speedSlider);
 		add(decelSlider);
+
+		// When the device is connected accept the config.
+		setProps(nameBorder.getTitle());
 	}
 
 	@Override public void mouseClicked(MouseEvent e) {
@@ -82,7 +85,19 @@ public class DevPanel extends JPanel implements MouseListener {
 	}
 
 	@Override public void mouseReleased(MouseEvent e) {
-		DeviceProps props = Assets.DEVICES_LIST.get(nameBorder.getTitle());
+		setProps(nameBorder.getTitle());
+	}
+
+	@Override public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override public void mouseExited(MouseEvent e) {
+
+	}
+
+	private void setProps(String name) {
+		DeviceProps props = Assets.DEVICES_LIST.get(name);
 		try {
 			Commands.setProp(props.getIds(), speed, deceleration);
 			props.setSpeed(speed);
@@ -92,13 +107,5 @@ public class DevPanel extends JPanel implements MouseListener {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-	}
-
-	@Override public void mouseEntered(MouseEvent e) {
-
-	}
-
-	@Override public void mouseExited(MouseEvent e) {
-
 	}
 }
