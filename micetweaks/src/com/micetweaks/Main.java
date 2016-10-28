@@ -6,6 +6,7 @@ import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
 import javax.swing.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
@@ -14,19 +15,25 @@ import java.io.InputStreamReader;
 public class Main {
 	private static DevFrame frame;
 
-	public static void main(String[] args) throws Exception {
-		// Load the config.
-		Config.load();
+	public static void main(String[] args) {
+		// Init theme.
+		try {
+			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
+			BeautyEyeLNFHelper.launchBeautyEyeLNF();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// Check host system for package dependency.
+		try {
+			Commands.checkSystemDependency();
+		} catch (IOException | InterruptedException e) {
+			JOptionPane.showMessageDialog(null,
+					"Missing package dependencies. You need to install 'udevadm' and " + "'xinput' packages.");
+			System.exit(1);
+		}
 
 		SwingUtilities.invokeLater(() -> {
-			// Init theme.
-			try {
-				BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
-				BeautyEyeLNFHelper.launchBeautyEyeLNF();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
 			// Init frame.
 			frame = new DevFrame(Assets.TITLE);
 			frame.prepare();
@@ -34,6 +41,9 @@ public class Main {
 			frame.setBounds(100, 100, 0, 0);
 			frame.setResizable(true);
 		});
+
+		// Load the config.
+		Config.load();
 
 		HotPlug hotplug = new HotPlug();
 		hotplug.detectUsbDevices(false);
@@ -43,19 +53,24 @@ public class Main {
 		});
 
 		// Start the usb hotplug monitor.
-		Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
-		BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-		String s;
-		while ((s = in.readLine()) != null) {
-			if (s.contains("mouse")) {
-				// Wait for system callback.
-				Thread.sleep(1000);
-				if (s.contains("add")) hotplug.detectUsbDevices(false);
-				else hotplug.detectUsbDevices(true);
+		try {
+			Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
+			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String s;
+			while ((s = in.readLine()) != null) {
+				if (s.contains("mouse")) {
+					// Wait for system callback.
+					Thread.sleep(1000);
+					if (s.contains("add")) hotplug.detectUsbDevices(false);
+					else hotplug.detectUsbDevices(true);
 
-				SwingUtilities.invokeAndWait(() -> frame.paint());
+					SwingUtilities.invokeAndWait(() -> frame.paint());
+				}
 			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,
+					"Cannot start the application. See the log:\n" + e.getMessage());
+			System.exit(1);
 		}
 	}
-
 }

@@ -20,7 +20,7 @@ class HotPlug {
 	 *
 	 * @param removeFlag if device is plugged off it additionally remove that device from list.
 	 */
-	public void detectUsbDevices(boolean removeFlag) throws InterruptedException {
+	public void detectUsbDevices(boolean removeFlag) {
 		String buff;
 		Process p = xinputExecute();
 		HashSet<String> devNameBuff = new HashSet<>();
