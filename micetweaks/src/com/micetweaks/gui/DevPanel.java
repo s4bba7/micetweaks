@@ -1,9 +1,9 @@
 package com.micetweaks.gui;
 
+import com.micetweaks.Assets;
 import com.micetweaks.Commands;
 import com.micetweaks.DeviceProps;
 import com.micetweaks.Log;
-import com.micetweaks.resources.Assets;
 
 import javax.swing.*;
 import javax.swing.border.Border;

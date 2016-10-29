@@ -1,7 +1,5 @@
 package com.micetweaks;
 
-import com.micetweaks.resources.Assets;
-
 import javax.swing.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;

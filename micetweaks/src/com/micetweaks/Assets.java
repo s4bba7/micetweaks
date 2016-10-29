@@ -1,11 +1,10 @@
-package com.micetweaks.resources;
+package com.micetweaks;
 
-import com.micetweaks.DeviceProps;
-import com.micetweaks.Main;
-
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Stores global variables.
@@ -14,6 +13,7 @@ import java.util.HashSet;
  */
 public class Assets {
 	public static final String TITLE = "Micetweaks";
+	public static  Image                        ICON;
 	// Stores all connected devices.
 	public static  HashMap<String, DeviceProps> DEVICES_LIST;
 	// Parent path to this application.
@@ -21,6 +21,11 @@ public class Assets {
 	private static File                         HOTPLUG_CONF;
 
 	static {
+		try {
+			ICON = ImageIO.read(Main.class.getResource("res/icon.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		PATH = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 		PATH = new File(PATH).getParent();
 		HOTPLUG_CONF = new File(PATH + "/hotplug.conf");

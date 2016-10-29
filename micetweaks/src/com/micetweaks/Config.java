@@ -1,7 +1,5 @@
 package com.micetweaks;
 
-import com.micetweaks.resources.Assets;
-
 import java.io.*;
 import java.util.HashMap;
 
@@ -17,7 +15,7 @@ public class Config {
 	 * @return hashmap object if file exists. Otherwise returns empty hashmap.
 	 */
 	public static HashMap<String, DeviceProps> load() {
-		HashMap<String, DeviceProps> map = null;
+		HashMap<String, DeviceProps> map;
 		try {
 			if (Assets.getHOTPLUG_CONF().exists()) {
 				ObjectInputStream in = new ObjectInputStream(new FileInputStream(Assets.getHOTPLUG_CONF()));

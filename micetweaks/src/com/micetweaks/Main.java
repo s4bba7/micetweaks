@@ -1,7 +1,6 @@
 package com.micetweaks;
 
 import com.micetweaks.gui.DevFrame;
-import com.micetweaks.resources.Assets;
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
 import javax.swing.*;
@@ -26,15 +25,6 @@ public class Main {
 			}
 		}));
 
-		// Init theme.
-		try {
-			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
-			BeautyEyeLNFHelper.launchBeautyEyeLNF();
-		} catch (Exception e) {
-			Log.write(e.getMessage());
-			e.printStackTrace();
-		}
-
 		// Check host system for package dependency.
 		try {
 			Commands.checkSystemDependency();
@@ -45,14 +35,14 @@ public class Main {
 			System.exit(1);
 		}
 
-		// Init frame.
-		SwingUtilities.invokeLater(() -> {
-			frame = new DevFrame(Assets.TITLE);
-			frame.prepare();
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setBounds(100, 100, 0, 0);
-			frame.setResizable(true);
-		});
+		// Init theme.
+		try {
+			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
+			BeautyEyeLNFHelper.launchBeautyEyeLNF();
+		} catch (Exception e) {
+			Log.write(e.getMessage());
+			e.printStackTrace();
+		}
 
 		// Load the config.
 		Assets.DEVICES_LIST = Config.load();
@@ -60,7 +50,11 @@ public class Main {
 		// Look for the already connected devices.
 		HotPlug.detectUsbDevices(false);
 		SwingUtilities.invokeLater(() -> {
+			// Init frame.
+			frame = new DevFrame(Assets.TITLE);
+			frame.prepare();
 			frame.paint();
+			frame.pack();
 			frame.setVisible(true);
 		});
 
@@ -76,7 +70,11 @@ public class Main {
 					if (s.contains("add")) HotPlug.detectUsbDevices(true);
 					else HotPlug.detectUsbDevices(true);
 
-					SwingUtilities.invokeAndWait(() -> frame.paint());
+					SwingUtilities.invokeLater(() -> {
+						frame.paint();
+						frame.repaint();
+						frame.pack();
+					});
 				}
 			}
 		} catch (Exception e) {
