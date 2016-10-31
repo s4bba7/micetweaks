@@ -48,7 +48,7 @@ public class Main {
 		Assets.DEVICES_LIST = Config.load();
 
 		// Look for the already connected devices.
-		HotPlug.detectUsbDevices(false);
+		HotPlug.detectUsbDevices(true);
 		SwingUtilities.invokeLater(() -> {
 			// Init frame.
 			frame = new DevFrame(Assets.TITLE);
