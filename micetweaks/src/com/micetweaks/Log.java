@@ -11,20 +11,19 @@ import java.io.IOException;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Log {
-	private static final BufferedWriter out;
+	private static BufferedWriter out;
 
 	static {
-		// Close stream at the program's exit.
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			try {
-				out.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}));
-
 		try {
 			out = new BufferedWriter(new FileWriter(Assets.getAppPath() + "/log.txt"));
+			// Close stream at the program's exit.
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}));
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null,
 					"Error. Cannot write to logfile, but program will continue:\n" + e.getMessage());
