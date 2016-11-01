@@ -67,7 +67,7 @@ public class Main {
 				if (s.contains("mouse")) {
 					// Wait for system callback.
 					Thread.sleep(1000);
-					if (s.contains("add")) HotPlug.detectUsbDevices(true);
+					if (s.contains("add")) HotPlug.detectUsbDevices(false);
 					else HotPlug.detectUsbDevices(true);
 
 					SwingUtilities.invokeLater(() -> {
