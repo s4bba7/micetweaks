@@ -8,13 +8,13 @@ import java.util.HashMap;
  *
  * @author Łukasz 's4bba7' Gąsiorowski.
  */
-public class Config {
+class Config {
 	/**
 	 * Loads configuration file.
 	 *
 	 * @return hashmap object if file exists. Otherwise returns empty hashmap.
 	 */
-	public static HashMap<String, DeviceProps> load() {
+	@SuppressWarnings({ "unchecked", "ResultOfMethodCallIgnored" }) public static HashMap<String, DeviceProps> load() {
 		HashMap<String, DeviceProps> map;
 		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(Assets.getHOTPLUG_CONF()))) {
 			if (Assets.getHOTPLUG_CONF().exists()) {
@@ -38,7 +38,7 @@ public class Config {
 		// Merge the old config with the new one.
 		conf.putAll(Assets.DEVICES_LIST);
 		// Clear devices IDs (IDs could change when devices are reconnected, so map may store many unneeded IDs).
-		conf.entrySet().stream().forEach(p -> p.getValue().getIds().clear());
+		conf.entrySet().forEach(p -> p.getValue().getIds().clear());
 
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Assets.getHOTPLUG_CONF()));
 		out.writeObject(conf);

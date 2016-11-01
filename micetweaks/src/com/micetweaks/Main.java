@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 /**
  * @author Łukasz 's4bba7' Gąsiorowski.
  */
-public class Main {
+class Main {
 	private static DevFrame frame;
 
 	public static void main(String[] args) {
@@ -28,7 +28,7 @@ public class Main {
 		// Check host system for package dependency.
 		try {
 			Commands.checkSystemDependency();
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			Log.write(e.getMessage());
 			JOptionPane.showMessageDialog(null,
 					"Missing package dependencies. You need to install 'udevadm' and " + "'xinput' packages.");
@@ -51,7 +51,7 @@ public class Main {
 		HotPlug.detectUsbDevices(true);
 		SwingUtilities.invokeLater(() -> {
 			// Init frame.
-			frame = new DevFrame(Assets.TITLE);
+			frame = new DevFrame();
 			frame.prepare();
 			frame.paint();
 			frame.pack();

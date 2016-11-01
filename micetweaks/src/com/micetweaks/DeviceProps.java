@@ -9,7 +9,7 @@ import java.util.HashSet;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DeviceProps implements Serializable {
-	private HashSet<Integer> ids = new HashSet<>();
+	private final HashSet<Integer> ids = new HashSet<>();
 	private double speed;
 	private double deceleration;
 
@@ -46,7 +46,7 @@ public class DeviceProps implements Serializable {
 
 	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
-		ids.stream().forEach(e -> sb.append(e + " "));
+		ids.forEach(e -> sb.append(e).append(" "));
 		return sb.toString();
 	}
 }

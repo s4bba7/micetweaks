@@ -20,18 +20,18 @@ import java.io.IOException;
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
-public class DevPanel extends JPanel implements MouseListener {
-	private double       speed;
-	private double       deceleration;
-	private TitledBorder nameBorder;
-	private TitledBorder speedBorder;
-	private TitledBorder decelBorder;
-	private JSlider     speedSlider = new JSlider(1, 50);
-	private JSlider     decelSlider = new JSlider(1, 50);
-	private JLabel      speedLabel  = new JLabel();
-	private JLabel      decelLabel  = new JLabel();
-	private Border      matteBorder = new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY);
-	private EmptyBorder emptyBorder = new EmptyBorder(16, 0, 0, 0);
+class DevPanel extends JPanel implements MouseListener {
+	private       double       speed;
+	private       double       deceleration;
+	private final TitledBorder nameBorder;
+	private final TitledBorder speedBorder;
+	private final TitledBorder decelBorder;
+	private final JSlider     speedSlider = new JSlider(1, 50);
+	private final JSlider     decelSlider = new JSlider(1, 50);
+	private final JLabel      speedLabel  = new JLabel();
+	private final JLabel      decelLabel  = new JLabel();
+	private final Border      matteBorder = new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY);
+	private final EmptyBorder emptyBorder = new EmptyBorder(16, 0, 0, 0);
 
 	public DevPanel(String name, double speed, double deceleration) {
 		// Default values.
@@ -112,10 +112,10 @@ public class DevPanel extends JPanel implements MouseListener {
 			Commands.setProp(props.getIds(), speed, deceleration);
 			props.setSpeed(speed);
 			props.setDeceleration(deceleration);
-		} catch (IOException | InterruptedException e1) {
-			Log.write(e1.getMessage());
-			JOptionPane.showMessageDialog(null, "Error. Cannot use this setting:\n" + e1.getMessage());
-			e1.printStackTrace();
+		} catch (IOException e) {
+			Log.write(e.getMessage());
+			JOptionPane.showMessageDialog(null, "Error. Cannot use this setting:\n" + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 }

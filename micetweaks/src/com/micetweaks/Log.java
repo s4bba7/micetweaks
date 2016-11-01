@@ -11,7 +11,7 @@ import java.io.IOException;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Log {
-	private static BufferedWriter out;
+	private static final BufferedWriter out;
 
 	static {
 		// Close stream at the program's exit.

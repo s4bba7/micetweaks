@@ -11,15 +11,15 @@ import java.awt.*;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DevFrame extends JFrame {
-	private JPanel panel = new JPanel();
+	private final JPanel panel = new JPanel();
 
-	public DevFrame(String title) {
-		super(title);
+	public DevFrame() {
+		super(Assets.TITLE);
 	}
 
 	public void prepare() {
 		setLayout(new BorderLayout());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setResizable(false);
 		setIconImage(Assets.ICON);
 		panel.setLayout(new GridLayout(0, 1));
@@ -31,7 +31,7 @@ public class DevFrame extends JFrame {
 	public void paint() {
 		panel.removeAll();
 
-		Assets.DEVICES_LIST.entrySet().stream().forEach(e -> {
+		Assets.DEVICES_LIST.entrySet().forEach(e -> {
 			DevPanel p = new DevPanel(e.getKey(), e.getValue().getSpeed(), e.getValue().getDeceleration());
 			p.prepare();
 			panel.add(p);

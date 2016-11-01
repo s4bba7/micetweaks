@@ -13,12 +13,12 @@ import java.util.HashMap;
  */
 public class Assets {
 	public static final String TITLE = "Micetweaks";
-	public static  Image                        ICON;
+	private static final File                         HOTPLUG_CONF;
+	public static        Image                        ICON;
 	// Stores all connected devices.
-	public static  HashMap<String, DeviceProps> DEVICES_LIST;
+	public static        HashMap<String, DeviceProps> DEVICES_LIST;
 	// Parent path to this application.
-	private static String                       PATH;
-	private static File                         HOTPLUG_CONF;
+	private static       String                       PATH;
 
 	static {
 		try {
