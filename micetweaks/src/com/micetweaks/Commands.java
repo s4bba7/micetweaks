@@ -52,7 +52,7 @@ public class Commands {
 	 * @throws InterruptedException
 	 */
 	public static void checkSystemDependency() throws IOException, InterruptedException {
-		Process p = Runtime.getRuntime().exec("xinput");
-		p = Runtime.getRuntime().exec(new String[] { "udevadm", "--help" });
+		Runtime.getRuntime().exec("xinput");
+		Runtime.getRuntime().exec(new String[] { "udevadm", "--help" });
 	}
 }
