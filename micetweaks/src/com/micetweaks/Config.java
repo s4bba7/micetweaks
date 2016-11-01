@@ -16,11 +16,9 @@ public class Config {
 	 */
 	public static HashMap<String, DeviceProps> load() {
 		HashMap<String, DeviceProps> map;
-		try {
+		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(Assets.getHOTPLUG_CONF()))) {
 			if (Assets.getHOTPLUG_CONF().exists()) {
-				ObjectInputStream in = new ObjectInputStream(new FileInputStream(Assets.getHOTPLUG_CONF()));
 				map = (HashMap<String, DeviceProps>) in.readObject();
-				in.close();
 			} else {
 				map = new HashMap<>();
 				Assets.getHOTPLUG_CONF().createNewFile();
@@ -37,8 +35,11 @@ public class Config {
 	 */
 	public static void save() throws IOException {
 		HashMap<String, DeviceProps> conf = load();
-		// Merge old config with new one.
+		// Merge the old config with the new one.
 		conf.putAll(Assets.DEVICES_LIST);
+		// Clear devices IDs (IDs could change when devices are reconnected, so map may store many unneeded IDs).
+		conf.entrySet().stream().forEach(p -> p.getValue().getIds().clear());
+
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Assets.getHOTPLUG_CONF()));
 		out.writeObject(conf);
 		out.close();
