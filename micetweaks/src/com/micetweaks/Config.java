@@ -8,7 +8,7 @@ import java.util.HashMap;
  *
  * @author Łukasz 's4bba7' Gąsiorowski.
  */
-class Config {
+public class Config {
 	/**
 	 * Loads configuration file.
 	 *

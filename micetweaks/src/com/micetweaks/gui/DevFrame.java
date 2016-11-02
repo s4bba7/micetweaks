@@ -11,7 +11,8 @@ import java.awt.*;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DevFrame extends JFrame {
-	private final JPanel panel = new JPanel();
+	private final JPanel     panel      = new JPanel();
+	private       SaveButton saveButton = new SaveButton();
 
 	public DevFrame() {
 		super(Assets.TITLE);
@@ -20,9 +21,11 @@ public class DevFrame extends JFrame {
 	public void prepare() {
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setResizable(false);
+		//setResizable(false);
 		setIconImage(Assets.ICON);
 		panel.setLayout(new GridLayout(0, 1));
+		add(panel, BorderLayout.CENTER);
+		add(saveButton, BorderLayout.NORTH);
 	}
 
 	/**
@@ -36,6 +39,6 @@ public class DevFrame extends JFrame {
 			p.prepare();
 			panel.add(p);
 		});
-		add(panel, BorderLayout.CENTER);
+		repaint();
 	}
 }

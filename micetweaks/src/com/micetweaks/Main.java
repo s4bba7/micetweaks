@@ -15,16 +15,6 @@ class Main {
 	private static DevFrame frame;
 
 	public static void main(String[] args) {
-		// Save config at program shutdown.
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			try {
-				Config.save();
-			} catch (IOException e) {
-				Log.write(e.getMessage());
-				JOptionPane.showMessageDialog(null, "Cannot save the config file. See the log file.");
-			}
-		}));
-
 		// Check host system for package dependency.
 		try {
 			Commands.checkSystemDependency();
