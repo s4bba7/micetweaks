@@ -7,7 +7,7 @@ Application detects the moment when device is plugged into the USB port and sets
 "Must have app" especially when using <B>KDE</B>, where you can set mouse acceleration only.  
 
 At the begining it detects all connected pointers (like mice and touchpads) and shows window with those devices. There you can adjust it's speed and deceleration.
-Every change is activated immediately. Config is saved at program's exit.
+Every change is activated immediately. To save configuration just click "Save config" button.
 
 Dependency: xinput package and udevadm installed in your operating system.
 
