@@ -42,7 +42,7 @@ class Main {
 		SwingUtilities.invokeLater(() -> {
 			// Init frame.
 			frame = new DevFrame();
-			frame.prepare();
+			frame.setup();
 			frame.paint();
 			frame.pack();
 			frame.setVisible(true);

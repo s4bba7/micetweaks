@@ -1,6 +1,7 @@
 package com.micetweaks.gui;
 
 import com.micetweaks.Assets;
+import com.micetweaks.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +19,7 @@ public class DevFrame extends JFrame {
 		super(Assets.TITLE);
 	}
 
-	public void prepare() {
+	public void setup() {
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		//setResizable(false);
@@ -26,6 +27,14 @@ public class DevFrame extends JFrame {
 		panel.setLayout(new GridLayout(0, 1));
 		add(panel, BorderLayout.CENTER);
 		add(saveButton, BorderLayout.NORTH);
+
+		// Set system tray.
+		try {
+			new Tray().setup();
+		} catch (AWTException e) {
+			Log.write(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	/**
