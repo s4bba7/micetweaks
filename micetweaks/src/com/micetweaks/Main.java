@@ -7,12 +7,14 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 /**
  * @author Łukasz 's4bba7' Gąsiorowski.
  */
 class Main {
 	private static DevFrame frame;
+	private static boolean isVisible = true; // Shows window at first run.
 
 	public static void main(String[] args) {
 		// Check host system for package dependency.
@@ -25,6 +27,10 @@ class Main {
 			System.exit(1);
 		}
 
+		// SHUTDOWN HOOK.
+		// Save configuration at program exit.
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> Config.saveAppConfig(frame)));
+
 		// Init theme.
 		try {
 			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
@@ -34,18 +40,24 @@ class Main {
 			e.printStackTrace();
 		}
 
-		// Load the config.
-		Assets.DEVICES_LIST = Config.load();
+		// Load program configuration if file exist.
+		if (Assets.getAppConf().exists()) {
+			Properties prop = Config.loadAppConfig();
+			isVisible = Boolean.parseBoolean(prop.getProperty("minimized"));
+		}
+
+		// Load devices configuration.
+		Assets.DEVICES_LIST = Config.loadDeviceConfig();
 
 		// Look for the already connected devices.
 		HotPlug.detectUsbDevices(true);
 		SwingUtilities.invokeLater(() -> {
 			// Init frame.
 			frame = new DevFrame();
-			frame.setup();
+			frame.setup(isVisible);
 			frame.paint();
 			frame.pack();
-			frame.setVisible(true);
+			frame.setVisible(isVisible);
 		});
 
 		// Start the usb hotplug monitor.

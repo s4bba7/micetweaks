@@ -14,6 +14,7 @@ import java.util.HashMap;
 public class Assets {
 	public static final String TITLE = "Micetweaks";
 	private static final File                         HOTPLUG_CONF;
+	private static final File                         APP_CONF;
 	public static        Image                        ICON;
 	// Stores all connected devices.
 	public static        HashMap<String, DeviceProps> DEVICES_LIST;
@@ -29,16 +30,24 @@ public class Assets {
 		PATH = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 		PATH = new File(PATH).getParent();
 		HOTPLUG_CONF = new File(PATH + "/hotplug.conf");
+		APP_CONF = new File(PATH + "/micetweaks.conf");
 	}
 
 	/**
-	 * @return configuration file "hotplug.conf"
+	 * @return device list file "hotplug.conf"
 	 */
-	public static File getHOTPLUG_CONF() {
+	static File getHotplugConf() {
 		return HOTPLUG_CONF;
 	}
 
-	public static String getAppPath() {
+	/**
+	 * @return program configuration file "micetweaks.conf"
+	 */
+	static File getAppConf() {
+		return APP_CONF;
+	}
+
+	static String getAppPath() {
 		return PATH;
 	}
 
