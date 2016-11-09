@@ -54,10 +54,14 @@ public class Main extends Application {
 		}
 		Stage finalFrame = frame;
 		frame.setOnCloseRequest(e -> {
-			// Save program configuration at program exit.
-			Config.saveAppConfig(finalFrame);
+			// Exit program configuration when window is closed.
 			System.exit(0);
 		});
+
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			// Save program configuration at program exit.
+			Config.saveAppConfig(finalFrame);
+		}));
 
 		// Start the usb hotplug monitor.
 		new Thread(new Monitor(frame)).start();
