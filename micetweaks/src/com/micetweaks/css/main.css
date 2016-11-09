@@ -8,16 +8,22 @@
     -fx-text-fill: #444444;
 }
 
+#values {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #444444;
+}
+
 .button {
-    -fx-background-color: linear-gradient(#3593a1, #1e5c9d),
-    radial-gradient(center 50% -40%, radius 200%, #31a4cd 45%, #1e7cc9 50%);
+    -fx-background-color: linear-gradient(#20a0ff, #1e5c9d),
+    radial-gradient(center 50% -40%, radius 200%, #3a9bdc 45%, #1e7cc9 50%);
     -fx-background-radius: 6, 5;
     -fx-background-insets: 0, 1;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: #a6e0ff;
-    -fx-min-width: 228;
+    -fx-min-width: 200;
     -fx-alignment: center;
 }
 
@@ -35,9 +41,9 @@
 
 .slider {
     -fx-focus-traversable: false;
-    -fx-block-increment: 0.0px;
-    -fx-max-height: 20px;
-    -fx-min-height: 20px;
+    -fx-block-increment: 0;
+    -fx-max-height: 26px;
+    -fx-min-height: 26px;
     -fx-min-width: 200px;
     -fx-max-width: 200px;
     -fx-highlight-fill: #20a0ff;
@@ -48,9 +54,9 @@
 }
 
 .progress-bar {
-    -fx-max-height: 16px;
-    -fx-min-height: 16px;
+    -fx-max-height: 18px;
+    -fx-min-height: 18px;
     -fx-min-width: 200px;
     -fx-max-width: 200px;
-    -fx-highlight-fill: #20a0ff;
+    -fx-accent: #398dcd;
 }

@@ -4,19 +4,18 @@ import com.micetweaks.Assets;
 import com.micetweaks.Commands;
 import com.micetweaks.DeviceProps;
 import com.micetweaks.Log;
+import com.micetweaks.gui.events.MouseAction;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.text.DecimalFormat;
 
 /**
  * Stores device regulators.
@@ -24,59 +23,60 @@ import java.text.DecimalFormat;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 class DevPanel extends VBox implements EventHandler<Event> {
-	private final Slider speedSlider = new Slider(1, 50, 11);
-	private final Slider decelSlider = new Slider(1, 50, 20);
-	private final Label  speedLabel  = new Label();
-	private final Label  decelLabel  = new Label();
-	private double speed;
-	private double deceleration;
-	private Label  name;
-	private DecimalFormat format = new DecimalFormat("#0.0");
+	private final Slider      speedSlider = new Slider(1, 100, 26);
+	private final Slider      decelSlider = new Slider(1, 100, 52);
+	private final Label       speedLabel  = new Label();
+	private final Label       decelLabel  = new Label();
+	private final ProgressBar speedBar    = new ProgressBar();
+	private final ProgressBar decelBar    = new ProgressBar();
+	private       StackPane   speedPane   = new StackPane();
+	private       StackPane   decelPane   = new StackPane();
+	private double      speed;
+	private double      deceleration;
+	private Label       name;
+	private MouseAction speedSliderAction;
+	private MouseAction decelSliderAction;
 
 	public DevPanel(String name, double speed, double deceleration) {
 		// Default values.
-		if (speed < 0.1) this.speed = 1.1;
+		if (speed < 0.1) this.speed = 2.6;
 		else this.speed = speed;
-		if (deceleration < 0.1) this.deceleration = 2.0;
+		if (deceleration < 0.1) this.deceleration = 5.2;
 		else this.deceleration = deceleration;
 
+		speedSliderAction = new MouseAction(speedLabel, speedBar, this.speed);
+		decelSliderAction = new MouseAction(decelLabel, decelBar, this.deceleration);
 		this.name = new Label(name);
 	}
 
 	public void prepare() {
 		setPadding(new Insets(4, 0, 8, 0));
-		final ProgressBar speedBar = new ProgressBar(speed / 5.0);
-		StackPane speedPane = new StackPane();
+
+		speedLabel.setId("values");
+		speedLabel.setUserData("Speed: ");
+		speedLabel.setText("" + speedLabel.getUserData() + speed);
+		speedLabel.setMouseTransparent(true);
+		decelLabel.setId("values");
+		decelLabel.setUserData("Deceleration: ");
+		decelLabel.setText("" + decelLabel.getUserData() + deceleration);
+		decelLabel.setMouseTransparent(true);
+
+		speedBar.setProgress(speed / 10.0);
+		decelBar.setProgress(deceleration / 10.0);
 
 		speedSlider.setValue((int) (this.speed * 10));
+		speedSlider.setOnMouseDragged(speedSliderAction);
+		speedSlider.setOnMousePressed(speedSliderAction);
 		speedSlider.setOnMouseReleased(this);
-		speedSlider.setOnMouseDragged(e -> {
-			Slider slider = (Slider) e.getSource();
-			speed = slider.getValue() / 10.0;
-			speedLabel.setText(format.format(speed));
-			speedBar.setProgress(speed / 5.0);
-		});
 		speedPane.getChildren().addAll(speedBar, speedSlider);
 
-		final ProgressBar decelBar = new ProgressBar(deceleration / 5.0);
-		StackPane decelPane = new StackPane();
 		decelSlider.setValue((int) (this.deceleration * 10));
+		decelSlider.setOnMouseDragged(decelSliderAction);
+		decelSlider.setOnMousePressed(decelSliderAction);
 		decelSlider.setOnMouseReleased(this);
-		decelSlider.setOnMouseDragged(e -> {
-			Slider slider = (Slider) e.getSource();
-			deceleration = slider.getValue() / 10.0;
-			decelLabel.setText(format.format(deceleration));
-			decelBar.setProgress(deceleration / 5.0);
-		});
 		decelPane.getChildren().addAll(decelBar, decelSlider);
 
-		speedLabel.setText("" + speed);
-		decelLabel.setText("" + deceleration);
-
-		HBox speedBox = new HBox(speedPane, speedLabel);
-		HBox decelBox = new HBox(decelPane, decelLabel);
-
-		getChildren().addAll(name, speedBox, decelBox);
+		getChildren().addAll(name, speedLabel, speedPane, decelLabel, decelPane);
 
 		// When the device is connected accept the config.
 		setProps(name.getText());
@@ -90,9 +90,9 @@ class DevPanel extends VBox implements EventHandler<Event> {
 	private void setProps(String name) {
 		DeviceProps props = Assets.DEVICES_LIST.get(name);
 		try {
-			Commands.setProp(props.getIds(), speed, deceleration);
-			props.setSpeed(speed);
-			props.setDeceleration(deceleration);
+			Commands.setProp(props.getIds(), speedSliderAction.getValue(), decelSliderAction.getValue());
+			props.setSpeed(speedSliderAction.getValue());
+			props.setDeceleration(decelSliderAction.getValue());
 		} catch (IOException e) {
 			Log.write(e.getMessage());
 			JOptionPane.showMessageDialog(null, "Error. Cannot use this setting:\n" + e.getMessage());
