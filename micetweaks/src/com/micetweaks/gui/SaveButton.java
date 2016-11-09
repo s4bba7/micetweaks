@@ -1,30 +1,25 @@
 package com.micetweaks.gui;
 
 import com.micetweaks.Config;
-import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 
 /**
  * Created on 02/11/16.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
-class SaveButton extends JButton implements ActionListener {
+class SaveButton extends Button implements EventHandler<Event> {
 	private String title = "Save config";
 
 	SaveButton() {
 		setText(title);
-		setFocusable(false);
-		setForeground(Color.WHITE);
-		setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.blue));
-		addActionListener(this);
+		setFocusTraversable(false);
+		setOnMouseClicked(this);
 	}
 
-	@Override public void actionPerformed(ActionEvent e) {
+	@Override public void handle(Event event) {
 		Config.saveDeviceConfig();
 	}
 }

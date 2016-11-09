@@ -2,65 +2,68 @@ package com.micetweaks.gui;
 
 import com.micetweaks.Assets;
 import com.micetweaks.Log;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  * Application's main frame.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
-public class DevFrame extends JDialog {
-	private final JPanel     panel      = new JPanel();
+public class DevFrame extends Stage {
+	private final VBox       panel      = new VBox();
 	private       SaveButton saveButton = new SaveButton();
-
-	public DevFrame() {
-		setTitle(Assets.TITLE);
-	}
+	private BorderPane pane;
+	private Scene      scene;
 
 	/**
 	 * @param isVisible needed for AWT hack - if frame is started in minimized mode it adds +2 to clickCounter.
+	 * @throws AWTException
 	 */
-	public void setup(boolean isVisible) {
-		setLayout(new BorderLayout());
-		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+	public DevFrame(boolean isVisible) {
+		setTitle(Assets.TITLE);
 		setResizable(false);
-		setIconImage(Assets.ICON);
-		panel.setLayout(new GridLayout(0, 1));
-		add(panel, BorderLayout.CENTER);
-		add(saveButton, BorderLayout.NORTH);
+		getIcons().add(new Image(Assets.ICON));
+		panel.setPadding(new Insets(8, 2, 2, 2));
+		pane = new BorderPane();
+		pane.setAlignment(saveButton, Pos.CENTER);
+		pane.setTop(saveButton);
+		pane.setCenter(panel);
+		scene = new Scene(pane);
+		scene.getStylesheets().add(Assets.CSS_PATH);
+		setScene(scene);
+		paint();
 
 		// Set system tray.
 		try {
 			new Tray(this).setup(isVisible);
 		} catch (AWTException e) {
-			Log.write(e.getMessage());
 			e.printStackTrace();
+			Log.write(e.getMessage());
 		}
-
-		// Exit app when close button is pressed on JDialog.
-		addWindowListener(new WindowAdapter() {
-			@Override public void windowClosing(WindowEvent e) {
-				super.windowClosing(e);
-				System.exit(0);
-			}
-		});
 	}
 
 	/**
 	 * Add devices to frame.
 	 */
 	public void paint() {
-		panel.removeAll();
+		Platform.runLater(() -> {
+			panel.getChildren().clear();
 
-		Assets.DEVICES_LIST.entrySet().forEach(e -> {
-			DevPanel p = new DevPanel(e.getKey(), e.getValue().getSpeed(), e.getValue().getDeceleration());
-			p.prepare();
-			panel.add(p);
+			Assets.DEVICES_LIST.entrySet().forEach(e -> {
+				DevPanel p = new DevPanel(e.getKey(), e.getValue().getSpeed(), e.getValue().getDeceleration());
+				p.prepare();
+				panel.getChildren().add(p);
+			});
+			sizeToScene();
 		});
-		repaint();
 	}
 }

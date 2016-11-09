@@ -1,10 +1,10 @@
 package com.micetweaks.gui;
 
 import com.micetweaks.Assets;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
@@ -13,10 +13,10 @@ import java.awt.event.MouseEvent;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 class Tray {
-	private JDialog frame;
-	private int     clickCounter;
+	private Stage frame;
+	private int   clickCounter;
 
-	Tray(JDialog frame) {
+	Tray(Stage frame) {
 		this.frame = frame;
 	}
 
@@ -28,16 +28,8 @@ class Tray {
 		if (SystemTray.isSupported()) {
 			if (!isVisible) clickCounter += 2;
 			SystemTray tray = SystemTray.getSystemTray();
-			TrayIcon icon = new TrayIcon(Assets.ICON);
+			TrayIcon icon = new TrayIcon(Assets.TRAY_ICON);
 			icon.setImageAutoSize(true);
-			icon.addMouseListener(new MouseAdapter() {
-				@Override public void mousePressed(MouseEvent e) {
-					System.out.println("A");
-					super.mouseClicked(e);
-					if (frame.isShowing()) frame.setVisible(false);
-					else frame.setVisible(true);
-				}
-			});
 			icon.setToolTip(Assets.TITLE);
 			tray.add(icon);
 			trayhack();
@@ -47,9 +39,16 @@ class Tray {
 	private void trayhack() {
 		// Hack to snoop on global mouse events:
 		Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
-			if (e.getSource().toString().contains("TrayIcon@")) clickCounter++;
-			if (clickCounter % 4 == 0) frame.setVisible(true);
-			else if ((clickCounter + 2) % 4 == 0) frame.setVisible(false);
+			if (e.getSource().toString().contains("TrayIcon@")) {
+				clickCounter++;
+				if (clickCounter % 4 == 0) Platform.runLater(() -> {
+					frame.setAlwaysOnTop(true);
+					frame.sizeToScene();
+					frame.centerOnScreen();
+					frame.show();
+				});
+				else if ((clickCounter + 2) % 4 == 0) Platform.runLater(() -> frame.hide());
+			}
 		}, MouseEvent.MOUSE_EVENT_MASK);
 	}
 }

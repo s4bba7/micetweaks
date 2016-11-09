@@ -1,7 +1,8 @@
 package com.micetweaks;
 
+import javafx.stage.Stage;
+
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Properties;
@@ -62,10 +63,9 @@ public class Config {
 	 *
 	 * @param frame application's frame.
 	 */
-	static void saveAppConfig(Component frame) {
+	static void saveAppConfig(Stage frame) {
 		try (BufferedWriter out = new BufferedWriter(new FileWriter(Assets.getAppConf()))) {
-			conf.put("minimized", frame.isVisible() + "");
-
+			conf.put("isVisible", frame.isShowing() + "");
 			conf.store(out, null);
 		} catch (IOException e) {
 			Log.write("Cannot saveDeviceConfig app config.\n" + e.getMessage());

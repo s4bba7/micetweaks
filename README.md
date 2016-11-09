@@ -1,9 +1,9 @@
-# micetweaks v0.9.5
+# micetweaks v1.0
 Mouse and touchpad automatic detector and sensitivity setter for Linux.
 
 Download: http://gasionet.pl/app/micetweaks.jar
 
-![micetweaks](http://i.imgur.com/fiYcqLd.png)
+![micetweaks](http://i.imgur.com/cHjLgPP.png)
 
 Application detects the moment when device is plugged into the USB port and sets individual config (speed and deceleration) to it.  
 "Must have app" especially when using <B>KDE</B>, where you can set mouse acceleration only.  
@@ -11,6 +11,9 @@ Application detects the moment when device is plugged into the USB port and sets
 At the begining it detects all connected pointers (like mice and touchpads) and shows window with those devices. There you can adjust it's speed and deceleration.
 Every change is activated immediately. To save configuration just click "Save config" button.
 
-Dependency: xinput package and udevadm installed in your operating system.
+You may hide the window into system tray by clicking on the tray icon. Click again to show it back on.
 
-Used theme: https://github.com/JackJiang2011/beautyeye/blob/master/README_en.md
+If application is closed when hidden in system tray it remembers that state, so when you'll start it again the 
+application will be running in the background.
+
+Dependency: xinput package and udevadm installed in your operating system.
