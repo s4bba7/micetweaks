@@ -4,34 +4,34 @@ import com.micetweaks.Assets;
 import com.micetweaks.Commands;
 import com.micetweaks.DeviceProps;
 import com.micetweaks.Log;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 /**
  * Stores device regulators.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
-class DevPanel extends JPanel implements MouseListener {
-	private       double       speed;
-	private       double       deceleration;
-	private final TitledBorder nameBorder;
-	private final TitledBorder speedBorder;
-	private final TitledBorder decelBorder;
-	private final JSlider     speedSlider = new JSlider(1, 50);
-	private final JSlider     decelSlider = new JSlider(1, 50);
-	private final JLabel      speedLabel  = new JLabel();
-	private final JLabel      decelLabel  = new JLabel();
-	private final Border      matteBorder = new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY);
-	private final EmptyBorder emptyBorder = new EmptyBorder(16, 0, 0, 0);
+class DevPanel extends VBox implements EventHandler<Event> {
+	private final Slider speedSlider = new Slider(1, 50, 11);
+	private final Slider decelSlider = new Slider(1, 50, 20);
+	private final Label  speedLabel  = new Label();
+	private final Label  decelLabel  = new Label();
+	private double speed;
+	private double deceleration;
+	private Label  name;
+	private DecimalFormat format = new DecimalFormat("#0.0");
 
 	public DevPanel(String name, double speed, double deceleration) {
 		// Default values.
@@ -40,65 +40,46 @@ class DevPanel extends JPanel implements MouseListener {
 		if (deceleration < 0.1) this.deceleration = 2.0;
 		else this.deceleration = deceleration;
 
-		nameBorder = BorderFactory.createTitledBorder(name);
-		speedBorder = BorderFactory.createTitledBorder("Speed  [" + this.speed + "]");
-		decelBorder = BorderFactory.createTitledBorder("Deceleration  [" + this.deceleration + "]");
+		this.name = new Label(name);
 	}
 
 	public void prepare() {
-		setLayout(new GridLayout(0, 1));
+		setPadding(new Insets(4, 0, 8, 0));
+		final ProgressBar speedBar = new ProgressBar(speed / 5.0);
+		StackPane speedPane = new StackPane();
 
 		speedSlider.setValue((int) (this.speed * 10));
-		speedSlider.addMouseListener(this);
-		speedSlider.setFocusable(false);
-		speedSlider.setBorder(speedBorder);
-		speedSlider.addChangeListener(e -> {
-			JSlider slider = (JSlider) e.getSource();
+		speedSlider.setOnMouseReleased(this);
+		speedSlider.setOnMouseDragged(e -> {
+			Slider slider = (Slider) e.getSource();
 			speed = slider.getValue() / 10.0;
-			speedBorder.setTitle("Speed  [" + speed + "]");
-			repaint();
+			speedLabel.setText(format.format(speed));
+			speedBar.setProgress(speed / 5.0);
 		});
-		decelSlider.setValue((int) (this.deceleration * 10));
-		decelSlider.addMouseListener(this);
-		decelSlider.setFocusable(false);
-		decelSlider.setBorder(decelBorder);
-		decelSlider.addChangeListener(e -> {
-			JSlider slider = (JSlider) e.getSource();
-			deceleration = slider.getValue() / 10.0;
-			decelBorder.setTitle("Deceleration  [" + deceleration + "]");
-			repaint();
-		});
+		speedPane.getChildren().addAll(speedBar, speedSlider);
 
-		nameBorder.setBorder(matteBorder);
-		speedBorder.setBorder(emptyBorder);
-		decelBorder.setBorder(emptyBorder);
+		final ProgressBar decelBar = new ProgressBar(deceleration / 5.0);
+		StackPane decelPane = new StackPane();
+		decelSlider.setValue((int) (this.deceleration * 10));
+		decelSlider.setOnMouseReleased(this);
+		decelSlider.setOnMouseDragged(e -> {
+			Slider slider = (Slider) e.getSource();
+			deceleration = slider.getValue() / 10.0;
+			decelLabel.setText(format.format(deceleration));
+			decelBar.setProgress(deceleration / 5.0);
+		});
+		decelPane.getChildren().addAll(decelBar, decelSlider);
 
 		speedLabel.setText("" + speed);
 		decelLabel.setText("" + deceleration);
 
-		setBorder(nameBorder);
+		HBox speedBox = new HBox(speedPane, speedLabel);
+		HBox decelBox = new HBox(decelPane, decelLabel);
 
-		add(speedSlider);
-		add(decelSlider);
+		getChildren().addAll(name, speedBox, decelBox);
 
 		// When the device is connected accept the config.
-		setProps(nameBorder.getTitle());
-	}
-
-	@Override public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override public void mousePressed(MouseEvent e) {
-	}
-
-	@Override public void mouseReleased(MouseEvent e) {
-		setProps(nameBorder.getTitle());
-	}
-
-	@Override public void mouseEntered(MouseEvent e) {
-	}
-
-	@Override public void mouseExited(MouseEvent e) {
+		setProps(name.getText());
 	}
 
 	/**
@@ -117,5 +98,9 @@ class DevPanel extends JPanel implements MouseListener {
 			JOptionPane.showMessageDialog(null, "Error. Cannot use this setting:\n" + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	@Override public void handle(Event event) {
+		setProps(name.getText());
 	}
 }

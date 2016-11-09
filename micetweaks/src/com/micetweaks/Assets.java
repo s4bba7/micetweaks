@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 /**
@@ -13,17 +14,19 @@ import java.util.HashMap;
  */
 public class Assets {
 	public static final String TITLE = "Micetweaks";
-	private static final File                         HOTPLUG_CONF;
-	private static final File                         APP_CONF;
-	public static        Image                        ICON;
+	private static final File HOTPLUG_CONF;
+	private static final File APP_CONF;
+	public static final String      CSS_PATH = Main.class.getResource("css/main.css").toExternalForm();
+	public static       InputStream ICON     = Main.class.getResourceAsStream("res/icon.png");
+	public static  Image                        TRAY_ICON;
 	// Stores all connected devices.
-	public static        HashMap<String, DeviceProps> DEVICES_LIST;
+	public static  HashMap<String, DeviceProps> DEVICES_LIST;
 	// Parent path to this application.
-	private static       String                       PATH;
+	private static String                       PATH;
 
 	static {
 		try {
-			ICON = ImageIO.read(Main.class.getResource("res/icon.png"));
+			TRAY_ICON = ImageIO.read(Main.class.getResource("res/icon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
