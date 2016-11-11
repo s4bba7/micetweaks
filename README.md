@@ -1,7 +1,7 @@
 # micetweaks v1.0
 Mouse and touchpad automatic detector and sensitivity setter for Linux.
 
-Download: http://gasionet.pl/app/micetweaks.jar
+Download: http://gasionet.pl/dlmicetweaks.php
 
 ![micetweaks](http://i.imgur.com/cHjLgPP.png)
 
