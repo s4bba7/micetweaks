@@ -1,4 +1,4 @@
-# micetweaks v1.0
+# micetweaks v1.1
 Mouse and touchpad automatic detector and sensitivity setter for Linux.
 
 Download: http://gasionet.pl/dlmicetweaks.php
@@ -12,8 +12,5 @@ At the begining it detects all connected pointers (like mice and touchpads) and 
 Every change is activated immediately. To save configuration just click "Save config" button.
 
 You may hide the window into system tray by clicking on the tray icon. Click again to show it back on.
-
-If application is closed when hidden in system tray it remembers that state, so when you'll start it again the 
-application will be running in the background.
 
 Dependency: xinput package and udevadm installed in your operating system.
