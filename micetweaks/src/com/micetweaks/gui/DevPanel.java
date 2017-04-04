@@ -47,6 +47,7 @@ class DevPanel extends VBox implements EventHandler<Event> {
 		speedSliderAction = new MouseAction(speedLabel, speedBar, this.speed);
 		decelSliderAction = new MouseAction(decelLabel, decelBar, this.deceleration);
 		this.name = new Label(name);
+		this.name.setId("devName");
 	}
 
 	public void prepare() {

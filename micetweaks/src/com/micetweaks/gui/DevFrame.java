@@ -25,10 +25,10 @@ public class DevFrame extends Stage {
 	private Scene      scene;
 
 	/**
-	 * @param isVisible needed for AWT hack - if frame is started in minimized mode it adds +2 to clickCounter.
+	 * @param firstRun needed for AWT hack - if frame is started in minimized mode it adds +2 to clickCounter.
 	 * @throws AWTException
 	 */
-	public DevFrame(boolean isVisible) {
+	public DevFrame(boolean firstRun) {
 		setTitle(Assets.TITLE);
 		setResizable(false);
 		getIcons().add(new Image(Assets.ICON));
@@ -44,7 +44,7 @@ public class DevFrame extends Stage {
 
 		// Set system tray.
 		try {
-			new Tray(this).setup(isVisible);
+			new Tray(this).setup(firstRun);
 		} catch (AWTException e) {
 			e.printStackTrace();
 			Log.write(e.getMessage());

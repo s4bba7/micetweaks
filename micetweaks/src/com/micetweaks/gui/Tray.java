@@ -21,12 +21,12 @@ class Tray {
 	}
 
 	/**
-	 * @param isVisible needed for AWT hack - if frame is started in minimized mode it adds +2 to clickCounter.
+	 * @param firstRun needed for AWT hack - if frame is started in minimized mode it adds +2 to clickCounter.
 	 * @throws AWTException
 	 */
-	void setup(boolean isVisible) throws AWTException {
+	void setup(boolean firstRun) throws AWTException {
 		if (SystemTray.isSupported()) {
-			if (!isVisible) clickCounter += 2;
+			if (!firstRun) clickCounter += 2;
 			SystemTray tray = SystemTray.getSystemTray();
 			TrayIcon icon = new TrayIcon(Assets.TRAY_ICON);
 			icon.setImageAutoSize(true);

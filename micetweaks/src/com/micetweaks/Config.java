@@ -1,7 +1,5 @@
 package com.micetweaks;
 
-import javafx.stage.Stage;
-
 import javax.swing.*;
 import java.io.*;
 import java.util.HashMap;
@@ -61,11 +59,11 @@ public class Config {
 	/**
 	 * Saves program's configuration.
 	 *
-	 * @param frame application's frame.
+	 * @param option program's value.
 	 */
-	static void saveAppConfig(Stage frame) {
+	static void saveAppConfig(Object option) {
 		try (BufferedWriter out = new BufferedWriter(new FileWriter(Assets.getAppConf()))) {
-			conf.put("isVisible", frame.isShowing() + "");
+			conf.put("firstRun", option.toString());
 			conf.store(out, null);
 		} catch (IOException e) {
 			Log.write("Cannot saveDeviceConfig app config.\n" + e.getMessage());

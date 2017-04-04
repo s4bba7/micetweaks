@@ -8,6 +8,19 @@
     -fx-text-fill: #444444;
 }
 
+#devName {
+    -fx-max-width: 200px;
+}
+
+#firstRunTitle {
+    -fx-font-size: 20px;
+}
+
+#firstRunText {
+    -fx-font-size: 15px;
+    -fx-wrap-text: true;
+}
+
 #values {
     -fx-font-size: 11px;
     -fx-font-weight: bold;

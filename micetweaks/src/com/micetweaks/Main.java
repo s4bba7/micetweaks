@@ -1,6 +1,7 @@
 package com.micetweaks;
 
 import com.micetweaks.gui.DevFrame;
+import com.micetweaks.gui.FirstRunDialog;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -13,7 +14,7 @@ import java.util.Properties;
  * @author Łukasz 's4bba7' Gąsiorowski.
  */
 public class Main extends Application {
-	private static boolean isVisible = true; // Shows window at first run.
+	private static boolean firstRun = true; // Shows window at first run.
 
 	public static void main(String[] args) {
 		// Check host system for package dependency.
@@ -21,15 +22,15 @@ public class Main extends Application {
 			Commands.checkSystemDependency();
 		} catch (IOException e) {
 			Log.write(e.getMessage());
-			JOptionPane.showMessageDialog(null,
-					"Missing package dependencies. You need to install 'udevadm' and " + "'xinput' packages.");
+			JOptionPane.showMessageDialog(null, "Missing package dependencies. You need to install 'udevadm' and "
+					+ "'xinput' packages.");
 			System.exit(1);
 		}
 
 		// Load program configuration if file exist.
 		if (Assets.getAppConf().exists()) {
 			Properties prop = Config.loadAppConfig();
-			isVisible = Boolean.parseBoolean(prop.getProperty("isVisible"));
+			firstRun = Boolean.parseBoolean(prop.getProperty("firstRun"));
 		}
 
 		// Prevent exiting JavaFX when last window is closed. Needed when hiding window from system tray.
@@ -46,22 +47,24 @@ public class Main extends Application {
 
 	@Override public void start(Stage frame) throws Exception {
 		// Init frame.
-		frame = new DevFrame(isVisible);
-		if (isVisible) {
-			frame.setAlwaysOnTop(true);
-			frame.sizeToScene();
+		frame = new DevFrame(firstRun);
+		frame.setAlwaysOnTop(true);
+		frame.sizeToScene();
+		if (firstRun) {
+			firstRun = false;
+			Stage firstRunDialog = new FirstRunDialog();
+			firstRunDialog.showAndWait();
 			frame.show();
 		}
+
 		Stage finalFrame = frame;
 		frame.setOnCloseRequest(e -> {
 			// Exit program configuration when window is closed.
 			System.exit(0);
 		});
 
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			// Save program configuration at program exit.
-			Config.saveAppConfig(finalFrame);
-		}));
+		// Save program configuration.
+		Config.saveAppConfig(firstRun);
 
 		// Start the usb hotplug monitor.
 		new Thread(new Monitor(frame)).start();
