@@ -28,22 +28,25 @@ public class Monitor implements Runnable {
 	}
 
 	@Override public void run() {
+		Process p = null;
 		try {
-			Platform.runLater(() -> paint());
-			Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
-			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String s;
-			while ((s = in.readLine()) != null) {
-				if (s.contains("mouse")) {
-					// Wait for system callback.
-					Thread.sleep(1000);
-					if (s.contains("add")) HotPlug.detectUsbDevices(false);
-					else HotPlug.detectUsbDevices(true);
+			// Register the process which will print out hotplugged devices.
+			p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
 
-					Platform.runLater(() -> paint());
+			try (BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+				Platform.runLater(() -> updateDeviceList());
+				String buff;
+				while ((buff = in.readLine()) != null) {
+					if (buff.contains("mouse")) {
+						// Wait for system callback.
+						Thread.sleep(1000);
+						if (buff.contains("add")) HotPlug.detectUsbDevices(false);
+						else HotPlug.detectUsbDevices(true);
+
+						Platform.runLater(() -> updateDeviceList());
+					}
 				}
 			}
-			in.close();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Cannot start the application. See the log:\n" + e.getMessage());
 			Log.write(e.getMessage());
@@ -52,9 +55,9 @@ public class Monitor implements Runnable {
 	}
 
 	/**
-	 * Add devices to frame.
+	 * Updates devices list of the programs frame.
 	 */
-	private void paint() {
+	private void updateDeviceList() {
 		Platform.runLater(() -> {
 			panelModifier.clear();
 
