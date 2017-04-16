@@ -22,7 +22,7 @@ import java.io.IOException;
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
-class DevPanel extends VBox implements EventHandler<Event> {
+public class DevPanel extends VBox implements EventHandler<Event> {
 	private final Slider      speedSlider = new Slider(1, 100, 26);
 	private final Slider      decelSlider = new Slider(1, 100, 52);
 	private final Label       speedLabel  = new Label();
@@ -38,49 +38,55 @@ class DevPanel extends VBox implements EventHandler<Event> {
 	private MouseAction decelSliderAction;
 
 	public DevPanel(String name, double speed, double deceleration) {
-		// Default values.
-		if (speed < 0.1) this.speed = 2.6;
-		else this.speed = speed;
-		if (deceleration < 0.1) this.deceleration = 5.2;
-		else this.deceleration = deceleration;
-
+		setSlidersDefaultValues(speed, deceleration);
 		speedSliderAction = new MouseAction(speedLabel, speedBar, this.speed);
 		decelSliderAction = new MouseAction(decelLabel, decelBar, this.deceleration);
 		this.name = new Label(name);
 		this.name.setId("devName");
 	}
 
-	public void prepare() {
-		setPadding(new Insets(4, 0, 8, 0));
+	private void setSlidersDefaultValues(double speed, double deceleration) {
+		if (speed < 0.1) this.speed = 2.6;
+		else this.speed = speed;
+		if (deceleration < 0.1) this.deceleration = 5.2;
+		else this.deceleration = deceleration;
+	}
 
+	public void setupComponents() {
+		setLayout();
 		speedLabel.setId("values");
 		speedLabel.setUserData("Speed: ");
 		speedLabel.setText("" + speedLabel.getUserData() + speed);
 		speedLabel.setMouseTransparent(true);
+
 		decelLabel.setId("values");
 		decelLabel.setUserData("Deceleration: ");
 		decelLabel.setText("" + decelLabel.getUserData() + deceleration);
 		decelLabel.setMouseTransparent(true);
 
 		speedBar.setProgress(speed / 10.0);
+
 		decelBar.setProgress(deceleration / 10.0);
 
 		speedSlider.setValue((int) (this.speed * 10));
 		speedSlider.setOnMouseDragged(speedSliderAction);
 		speedSlider.setOnMousePressed(speedSliderAction);
 		speedSlider.setOnMouseReleased(this);
+
 		speedPane.getChildren().addAll(speedBar, speedSlider);
 
 		decelSlider.setValue((int) (this.deceleration * 10));
 		decelSlider.setOnMouseDragged(decelSliderAction);
 		decelSlider.setOnMousePressed(decelSliderAction);
 		decelSlider.setOnMouseReleased(this);
+
 		decelPane.getChildren().addAll(decelBar, decelSlider);
 
 		getChildren().addAll(name, speedLabel, speedPane, decelLabel, decelPane);
+	}
 
-		// When the device is connected accept the config.
-		setProps(name.getText());
+	private void setLayout() {
+		setPadding(new Insets(4, 0, 8, 0));
 	}
 
 	/**
@@ -88,7 +94,7 @@ class DevPanel extends VBox implements EventHandler<Event> {
 	 *
 	 * @param name device's name.
 	 */
-	private void setProps(String name) {
+	public void setProps(String name) {
 		DeviceProps props = Assets.DEVICES_LIST.get(name);
 		try {
 			Commands.setProp(props.getIds(), speedSliderAction.getValue(), decelSliderAction.getValue());

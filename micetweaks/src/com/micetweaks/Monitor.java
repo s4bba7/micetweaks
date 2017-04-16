@@ -1,7 +1,10 @@
 package com.micetweaks;
 
 import com.micetweaks.gui.DevFrame;
+import com.micetweaks.gui.DevPanel;
+import com.micetweaks.gui.DevPanelModifier;
 import javafx.application.Platform;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import javax.swing.*;
@@ -14,14 +17,19 @@ import java.io.InputStreamReader;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Monitor implements Runnable {
-	private DevFrame frame;
+	private DevFrame         frame;
+	private VBox             mainPanel;
+	private DevPanelModifier panelModifier;
 
 	public Monitor(Stage frame) {
 		this.frame = (DevFrame) frame;
+		mainPanel = this.frame.getPanel();
+		panelModifier = new DevPanelModifier(mainPanel);
 	}
 
 	@Override public void run() {
 		try {
+			Platform.runLater(() -> paint());
 			Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
 			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String s;
@@ -32,7 +40,7 @@ public class Monitor implements Runnable {
 					if (s.contains("add")) HotPlug.detectUsbDevices(false);
 					else HotPlug.detectUsbDevices(true);
 
-					Platform.runLater(() -> frame.paint());
+					Platform.runLater(() -> paint());
 				}
 			}
 			in.close();
@@ -41,5 +49,23 @@ public class Monitor implements Runnable {
 			Log.write(e.getMessage());
 			System.exit(1);
 		}
+	}
+
+	/**
+	 * Add devices to frame.
+	 */
+	private void paint() {
+		Platform.runLater(() -> {
+			panelModifier.clear();
+
+			Assets.DEVICES_LIST.entrySet().forEach(e -> {
+				System.out.println(e.getKey() + ":" + e.getValue().getSpeed());
+				DevPanel p = new DevPanel(e.getKey(), e.getValue().getSpeed(), e.getValue().getDeceleration());
+				p.setupComponents();
+				p.setProps(e.getKey());
+				panelModifier.add(p);
+			});
+			frame.sizeToScene();
+		});
 	}
 }

@@ -56,6 +56,7 @@ public class Main extends Application {
 			firstRunDialog.showAndWait();
 			frame.show();
 		}
+		frame.show(); // to remove
 
 		Stage finalFrame = frame;
 		frame.setOnCloseRequest(e -> {

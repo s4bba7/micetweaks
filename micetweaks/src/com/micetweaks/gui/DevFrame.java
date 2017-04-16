@@ -2,11 +2,9 @@ package com.micetweaks.gui;
 
 import com.micetweaks.Assets;
 import com.micetweaks.Log;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -23,26 +21,41 @@ public class DevFrame extends Stage {
 	private       SaveButton saveButton = new SaveButton();
 	private BorderPane pane;
 	private Scene      scene;
+	private boolean    firstRun;
 
 	/**
 	 * @param firstRun needed for AWT hack - if frame is started in minimized mode it adds +2 to clickCounter.
 	 * @throws AWTException
 	 */
 	public DevFrame(boolean firstRun) {
-		setTitle(Assets.TITLE);
-		setResizable(false);
-		getIcons().add(new Image(Assets.ICON));
+		this.firstRun = firstRun;
+		setFrameProperties();
+		setLayout();
+		setScene();
+		setSystemTray();
+	}
+
+	private void setLayout() {
 		panel.setPadding(new Insets(8, 2, 2, 2));
 		pane = new BorderPane();
 		pane.setAlignment(saveButton, Pos.CENTER);
 		pane.setTop(saveButton);
 		pane.setCenter(panel);
+	}
+
+	private void setFrameProperties() {
+		setTitle(Assets.TITLE);
+		setResizable(false);
+		getIcons().add(new javafx.scene.image.Image(Assets.ICON));
+	}
+
+	private void setScene() {
 		scene = new Scene(pane);
 		scene.getStylesheets().add(Assets.CSS_PATH);
 		setScene(scene);
-		paint();
+	}
 
-		// Set system tray.
+	private void setSystemTray() {
 		try {
 			new Tray(this).setup(firstRun);
 		} catch (AWTException e) {
@@ -51,19 +64,7 @@ public class DevFrame extends Stage {
 		}
 	}
 
-	/**
-	 * Add devices to frame.
-	 */
-	public void paint() {
-		Platform.runLater(() -> {
-			panel.getChildren().clear();
-
-			Assets.DEVICES_LIST.entrySet().forEach(e -> {
-				DevPanel p = new DevPanel(e.getKey(), e.getValue().getSpeed(), e.getValue().getDeceleration());
-				p.prepare();
-				panel.getChildren().add(p);
-			});
-			sizeToScene();
-		});
+	public VBox getPanel() {
+		return panel;
 	}
 }
