@@ -1,9 +1,9 @@
 package com.micetweaks.gui;
 
-import com.micetweaks.Assets;
 import com.micetweaks.Commands;
-import com.micetweaks.DeviceProps;
 import com.micetweaks.Log;
+import com.micetweaks.configs.DevicesConfig;
+import com.micetweaks.devices.Device;
 import com.micetweaks.gui.events.MouseAction;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -18,7 +18,7 @@ import javax.swing.*;
 import java.io.IOException;
 
 /**
- * Stores device regulators.
+ * Stores com.micetweaks.devices regulators.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
@@ -90,20 +90,20 @@ public class DevPanel extends VBox implements EventHandler<Event> {
 	}
 
 	/**
-	 * Set speed and deceleration for the desired device.
+	 * Set speed and deceleration for the desired devices.
 	 *
-	 * @param name device's name.
+	 * @param name devices's name.
 	 */
 	public void setProps(String name) {
-		DeviceProps props = Assets.DEVICES_LIST.get(name);
+		Device props = DevicesConfig.INSTANCE.getConfig().get(name);
 		try {
 			Commands.setProp(props.getIds(), speedSliderAction.getValue(), decelSliderAction.getValue());
 			props.setSpeed(speedSliderAction.getValue());
 			props.setDeceleration(decelSliderAction.getValue());
 		} catch (IOException e) {
-			Log.write(e.getMessage());
-			JOptionPane.showMessageDialog(null, "Error. Cannot use this setting:\n" + e.getMessage());
+			Log.write("ERROR, cannot use this setting: " + e.getMessage());
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error. Cannot use this setting: " + e.getMessage());
 		}
 	}
 

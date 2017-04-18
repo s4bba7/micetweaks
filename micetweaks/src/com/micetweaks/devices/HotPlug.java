@@ -1,4 +1,7 @@
-package com.micetweaks;
+package com.micetweaks.devices;
+
+import com.micetweaks.Log;
+import com.micetweaks.configs.DevicesConfig;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,22 +9,23 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Invoked events on connecting/disconnecting devices.
  * <p>
  * author Łukasz 's4bba7' Gąsiorowski
  */
-class HotPlug {
+public class HotPlug {
 	/**
 	 * Detects plugged in devices and adds or removes them from Assets.DEVICES_LIST.
 	 *
-	 * @param removeFlag device might be plugged off so mark it TRUE to additionally remove that device from list.
+	 * @param removeFlag com.micetweaks.devices might be plugged off so mark it TRUE to additionally remove that com.micetweaks.devices from list.
 	 */
-	static void detectUsbDevices(boolean removeFlag) {
+	public static void detectUsbDevices(boolean removeFlag) {
 		String buff;
 		Process p = xinputExecute();
-		HashSet<String> devNameBuff = new HashSet<>();
+		Set<String> devNameBuff = new HashSet<>();
 
 		if (p != null) try (BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
 			while ((buff = in.readLine()) != null) {
@@ -35,24 +39,24 @@ class HotPlug {
 						devNameBuff.add(devName);
 
 						// If device exist in hashmap just add another devID into it.
-						if (Assets.DEVICES_LIST.containsKey(devName)) {
-							DeviceProps devID = Assets.DEVICES_LIST.get(devName);
+						if (DevicesConfig.INSTANCE.getConfig().containsKey(devName)) {
+							Device devID = DevicesConfig.INSTANCE.getConfig().get(devName);
 							devID.addId(id);
 						} else {
-							DeviceProps devID = new DeviceProps(id);
-							Assets.DEVICES_LIST.put(devName, devID);
+							Device devID = new DeviceProps(id);
+							DevicesConfig.INSTANCE.getConfig().put(devName, devID);
 						}
 					}
 					// When there's no more pointers just break.
 				} else if (dev[2].contains("keyboard")) break;
 			}
 
-			// Check if any device is plugged off. If so remove it from list.
+			// Check if any com.micetweaks.devices is plugged off. If so remove it from list.
 			if (removeFlag) {
-				for (Iterator<Map.Entry<String, DeviceProps>> i = Assets.DEVICES_LIST.entrySet().iterator(); i
+				for (Iterator<Map.Entry<String, Device>> i = DevicesConfig.INSTANCE.getConfig().entrySet().iterator(); i
 						.hasNext(); ) {
-					Map.Entry<String, DeviceProps> e = i.next();
-					if (!devNameBuff.contains(e.getKey())) i.remove();
+					String devName = i.next().getKey();
+					if (!devNameBuff.contains(devName)) i.remove();
 				}
 			}
 		} catch (IOException e) {

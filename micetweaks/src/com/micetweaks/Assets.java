@@ -5,7 +5,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
 /**
  * Stores global variables.
@@ -13,16 +12,12 @@ import java.util.HashMap;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Assets {
-	public static final String TITLE = "Micetweaks";
-	private static final File HOTPLUG_CONF;
-	private static final File APP_CONF;
+	public static final String      TITLE    = "Micetweaks";
 	public static final String      CSS_PATH = Main.class.getResource("css/main.css").toExternalForm();
 	public static       InputStream ICON     = Main.class.getResourceAsStream("res/icon.png");
-	public static  Image                        TRAY_ICON;
-	// Stores all connected devices.
-	public static  HashMap<String, DeviceProps> DEVICES_LIST;
+	public static  Image  TRAY_ICON;
 	// Parent path to this application.
-	private static String                       PATH;
+	private static String PROGRAMS_PATH;
 
 	static {
 		try {
@@ -30,28 +25,11 @@ public class Assets {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		PATH = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		PATH = new File(PATH).getParent();
-		HOTPLUG_CONF = new File(PATH + "/hotplug.conf");
-		APP_CONF = new File(PATH + "/micetweaks.conf");
+		PROGRAMS_PATH = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		PROGRAMS_PATH = new File(PROGRAMS_PATH).getParent();
 	}
 
-	/**
-	 * @return device list file "hotplug.conf"
-	 */
-	static File getHotplugConf() {
-		return HOTPLUG_CONF;
+	public static String getProgramsPath() {
+		return PROGRAMS_PATH;
 	}
-
-	/**
-	 * @return program configuration file "micetweaks.conf"
-	 */
-	static File getAppConf() {
-		return APP_CONF;
-	}
-
-	static String getAppPath() {
-		return PATH;
-	}
-
 }

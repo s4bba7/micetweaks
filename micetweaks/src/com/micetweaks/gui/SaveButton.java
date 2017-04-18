@@ -1,6 +1,6 @@
 package com.micetweaks.gui;
 
-import com.micetweaks.Config;
+import com.micetweaks.configs.DevicesConfig;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -20,6 +20,6 @@ class SaveButton extends Button implements EventHandler<Event> {
 	}
 
 	@Override public void handle(Event event) {
-		Config.saveDeviceConfig();
+		DevicesConfig.INSTANCE.save();
 	}
 }

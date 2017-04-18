@@ -15,7 +15,7 @@ public class Log {
 
 	static {
 		try {
-			out = new BufferedWriter(new FileWriter(Assets.getAppPath() + "/log.txt"));
+			out = new BufferedWriter(new FileWriter(Assets.getProgramsPath() + "/log.txt"));
 			// Close stream at the program's exit.
 			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 				try {
@@ -25,8 +25,8 @@ public class Log {
 				}
 			}));
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,
-					"Error. Cannot write to logfile, but program will continue:\n" + e.getMessage());
+			JOptionPane.showMessageDialog(null, "ERROR, cannot write to logfile, but program will continue: " + e
+					.getMessage());
 			e.printStackTrace();
 		}
 	}

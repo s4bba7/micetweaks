@@ -19,7 +19,7 @@ import javafx.stage.StageStyle;
 public class FirstRunDialog extends Stage {
 	private final String   greetingsText =
 			"How-to:\n" + "1. To hide or show program's window just click on the tray icon.\n"
-					+ "2. To save configuration click \"save config\" button.\n"
+					+ "2. To add configuration click \"add config\" button.\n"
 					+ "3. To adjust mouse/touchpad speed or deceleration press and hold scrollbar, then slide "
 					+ "it to the left to decrease property or to the right to increase it. When you "
 					+ "release the button the property will be applied immediately." + "\n";

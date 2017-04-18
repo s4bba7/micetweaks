@@ -12,7 +12,7 @@ import java.util.HashSet;
 	/**
 	 * Sets devices properties by calling "xinput set-prop" command.
 	 *
-	 * @param devsID       device's ID set.
+	 * @param devsID       com.micetweaks.devices's ID set.
 	 * @param speed        0.3 to 1.2 recomended.
 	 * @param deceleration 1.0 to 1.8 recommended.
 	 * @throws IOException
@@ -28,7 +28,7 @@ import java.util.HashSet;
 	/**
 	 * Sets devices properties by calling "xinput set-prop" command.
 	 *
-	 * @param devName      device name taken from "xinput" command.
+	 * @param devName      com.micetweaks.devices name taken from "xinput" command.
 	 * @param speed        0.3 to 1.2 recomended.
 	 * @param deceleration 1.0 to 1.8 recommended.
 	 * @throws IOException
