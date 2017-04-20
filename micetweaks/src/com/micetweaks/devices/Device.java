@@ -1,14 +1,12 @@
 package com.micetweaks.devices;
 
-import java.util.HashSet;
-
 /**
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public interface Device {
-	HashSet<Integer> getIds();
+	String getName();
 
-	boolean addId(int id);
+	void setName(String name);
 
 	double getSpeed();
 

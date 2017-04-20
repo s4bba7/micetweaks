@@ -1,7 +1,9 @@
 package com.micetweaks;
 
 import com.micetweaks.configs.DevicesConfig;
+import com.micetweaks.devices.ActiveDeviceObserver;
 import com.micetweaks.devices.Device;
+import com.micetweaks.devices.DeviceObserver;
 import com.micetweaks.devices.HotPlug;
 import com.micetweaks.gui.DevFrame;
 import com.micetweaks.gui.DevPanel;
@@ -25,6 +27,7 @@ public class Monitor implements Runnable {
 	private VBox                mainPanel;
 	private DevPanelModifier    panelModifier;
 	private Map<String, Device> devicesConfigMap;
+	private DeviceObserver deviceObserver = new ActiveDeviceObserver();
 
 	public Monitor(Stage frame) {
 		this.frame = (DevFrame) frame;
@@ -35,24 +38,22 @@ public class Monitor implements Runnable {
 
 	@Override public void run() {
 		// Look for the already connected devices.
-		HotPlug.detectUsbDevices(true);
+		HotPlug.detectUSBPointerDevices(deviceObserver);
+		updateDeviceList();
 
 		Process p = null;
 		try {
-			// Register the proccess which will print out hotplugging the com.micetweaks.devices.
+			// Register the process which will print out hotplugged devices.
 			p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "udevadm monitor --udev" });
 
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-				updateDeviceList();
-
 				String s;
 				while ((s = in.readLine()) != null) {
 					if (s.contains("mouse")) {
+						deviceObserver.removeDevices();
 						// Wait for system callback.
 						Thread.sleep(1000);
-						if (s.contains("add")) HotPlug.detectUsbDevices(false);
-						else HotPlug.detectUsbDevices(true);
-
+						HotPlug.detectUSBPointerDevices(deviceObserver);
 						updateDeviceList();
 					}
 				}
@@ -71,11 +72,22 @@ public class Monitor implements Runnable {
 		Platform.runLater(() -> {
 			panelModifier.clear();
 
-			devicesConfigMap.entrySet().forEach(e -> {
-				DevPanel p = new DevPanel(e.getKey(), e.getValue().getSpeed(), e.getValue().getDeceleration());
-				p.setupComponents();
-				p.setProps(e.getKey());
-				panelModifier.add(p);
+			deviceObserver.getActiveDevices().entrySet().stream().forEach(e -> {
+				String devName = e.getKey();
+				int id = e.getValue();
+				DevPanel devPanel = null;
+
+				if (devicesConfigMap.get(e.getKey()) != null) {
+					double speed = devicesConfigMap.get(e.getKey()).getSpeed();
+					double deceleration = devicesConfigMap.get(e.getKey()).getDeceleration();
+					devPanel = new DevPanel(devName, speed, deceleration, id);
+				} else {
+					DevicesConfig.INSTANCE.createConfig(devName);
+					devPanel = new DevPanel(devName, id);
+				}
+				devPanel.setupComponents();
+				devPanel.handle(null);
+				panelModifier.add(devPanel);
 			});
 			frame.sizeToScene();
 		});

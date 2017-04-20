@@ -1,5 +1,6 @@
 package com.micetweaks.gui;
 
+import com.micetweaks.Assets;
 import com.micetweaks.Commands;
 import com.micetweaks.Log;
 import com.micetweaks.configs.DevicesConfig;
@@ -23,33 +24,44 @@ import java.io.IOException;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DevPanel extends VBox implements EventHandler<Event> {
-	private final Slider      speedSlider = new Slider(1, 100, 26);
-	private final Slider      decelSlider = new Slider(1, 100, 52);
-	private final Label       speedLabel  = new Label();
-	private final Label       decelLabel  = new Label();
-	private final ProgressBar speedBar    = new ProgressBar();
-	private final ProgressBar decelBar    = new ProgressBar();
-	private       StackPane   speedPane   = new StackPane();
-	private       StackPane   decelPane   = new StackPane();
-	private double      speed;
-	private double      deceleration;
+	private Slider      speedSlider  = new Slider(1, 100, Assets.SPEED_DEFAULT * 10);
+	private Slider      decelSlider  = new Slider(1, 100, Assets.DECELERATION_DEFAULT * 10);
+	private Label       speedLabel   = new Label("" + Assets.SPEED_DEFAULT);
+	private Label       decelLabel   = new Label("" + Assets.DECELERATION_DEFAULT);
+	private ProgressBar speedBar     = new ProgressBar(Assets.SPEED_DEFAULT * 10);
+	private ProgressBar decelBar     = new ProgressBar(Assets.DECELERATION_DEFAULT * 10);
+	private StackPane   speedPane    = new StackPane();
+	private StackPane   decelPane    = new StackPane();
+	private double      speed        = Assets.SPEED_DEFAULT;
+	private double      deceleration = Assets.DECELERATION_DEFAULT;
 	private Label       name;
+	private int         devID;
 	private MouseAction speedSliderAction;
 	private MouseAction decelSliderAction;
 
-	public DevPanel(String name, double speed, double deceleration) {
-		setSlidersDefaultValues(speed, deceleration);
+	public DevPanel(String name, double speed, double deceleration, int id) {
+		this.speed = speed;
+		this.deceleration = deceleration;
+		this.name = new Label(name);
+		this.name.setId("devName");
+		devID = id;
+
+		speedSlider = new Slider(1, 100, speed * 10);
+		decelSlider = new Slider(1, 100, deceleration * 10);
+		speedLabel = new Label("" + speed);
+		decelLabel = new Label("" + deceleration);
+		speedBar = new ProgressBar(speed * 10);
+		decelBar = new ProgressBar(deceleration * 10);
+		speedSliderAction = new MouseAction(speedLabel, speedBar, speed);
+		decelSliderAction = new MouseAction(decelLabel, decelBar, deceleration);
+	}
+
+	public DevPanel(String name, int id) {
 		speedSliderAction = new MouseAction(speedLabel, speedBar, this.speed);
 		decelSliderAction = new MouseAction(decelLabel, decelBar, this.deceleration);
 		this.name = new Label(name);
 		this.name.setId("devName");
-	}
-
-	private void setSlidersDefaultValues(double speed, double deceleration) {
-		if (speed < 0.1) this.speed = 2.6;
-		else this.speed = speed;
-		if (deceleration < 0.1) this.deceleration = 5.2;
-		else this.deceleration = deceleration;
+		devID = id;
 	}
 
 	public void setupComponents() {
@@ -89,15 +101,10 @@ public class DevPanel extends VBox implements EventHandler<Event> {
 		setPadding(new Insets(4, 0, 8, 0));
 	}
 
-	/**
-	 * Set speed and deceleration for the desired devices.
-	 *
-	 * @param name devices's name.
-	 */
-	public void setProps(String name) {
-		Device props = DevicesConfig.INSTANCE.getConfig().get(name);
+	@Override public void handle(Event event) {
+		Device props = DevicesConfig.INSTANCE.getConfig().get(name.getText());
 		try {
-			Commands.setProp(props.getIds(), speedSliderAction.getValue(), decelSliderAction.getValue());
+			Commands.setProp(devID, speedSliderAction.getValue(), decelSliderAction.getValue());
 			props.setSpeed(speedSliderAction.getValue());
 			props.setDeceleration(decelSliderAction.getValue());
 		} catch (IOException e) {
@@ -105,9 +112,5 @@ public class DevPanel extends VBox implements EventHandler<Event> {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error. Cannot use this setting: " + e.getMessage());
 		}
-	}
-
-	@Override public void handle(Event event) {
-		setProps(name.getText());
 	}
 }

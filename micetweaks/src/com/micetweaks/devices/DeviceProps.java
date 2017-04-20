@@ -1,32 +1,27 @@
 package com.micetweaks.devices;
 
 import java.io.Serializable;
-import java.util.HashSet;
 
 /**
- * Stores com.micetweaks.devices variables.
+ * Stores device variables.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DeviceProps implements Serializable, Device {
-	private final HashSet<Integer> ids = new HashSet<>();
+	private String name;
 	private double speed;
 	private double deceleration;
 
 	/**
-	 * @param id com.micetweaks.devices's identification number taken from "xinput" command.
+	 * @param name device's name.
 	 */
-	public DeviceProps(int id) {
-		this.ids.add(id);
+	public DeviceProps(String name) {
+		this.name = name;
 	}
 
-	@Override public HashSet<Integer> getIds() {
-		return ids;
-	}
+	@Override public String getName() { return name; }
 
-	@Override public boolean addId(int id) {
-		return ids.add(id);
-	}
+	@Override public void setName(String name) { this.name = name; }
 
 	@Override public double getSpeed() {
 		return speed;
@@ -44,9 +39,4 @@ public class DeviceProps implements Serializable, Device {
 		this.deceleration = deceleration;
 	}
 
-	@Override public String toString() {
-		StringBuilder sb = new StringBuilder();
-		ids.forEach(e -> sb.append(e).append(" "));
-		return sb.toString();
-	}
 }

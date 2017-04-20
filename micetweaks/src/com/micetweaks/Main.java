@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Łukasz 's4bba7' Gąsiorowski.
  */
 public class Main extends Application {
-	private static boolean firstRun = false; // Shows window at first run.
+	private static boolean firstRun = false; // Shows greetings window at first run.
 	private static Map<String, String> programConfigMap;
 
 	public static void main(String[] args) {
@@ -31,6 +31,7 @@ public class Main extends Application {
 
 		programConfigMap = ProgramConfig.INSTANCE.load();
 		if (programConfigMap != null && programConfigMap.isEmpty()) firstRun = true;
+
 		// Prevent exiting JavaFX when last window is closed. Needed when hiding window from system tray.
 		Platform.setImplicitExit(false);
 
