@@ -13,13 +13,13 @@ import java.text.DecimalFormat;
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
-public class MouseAction implements EventHandler<MouseEvent> {
+public class DevPanelSliderEventHandler implements EventHandler<MouseEvent> {
 	private DecimalFormat format = new DecimalFormat("#0.0");
 	private Label       label;
 	private double      value;
 	private ProgressBar bar;
 
-	public MouseAction(Label label, ProgressBar bar, double value) {
+	public DevPanelSliderEventHandler(Label label, ProgressBar bar, double value) {
 		this.label = label;
 		this.bar = bar;
 		this.value = value;

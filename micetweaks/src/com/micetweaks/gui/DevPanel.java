@@ -5,7 +5,7 @@ import com.micetweaks.Commands;
 import com.micetweaks.Log;
 import com.micetweaks.configs.DevicesConfig;
 import com.micetweaks.devices.Device;
-import com.micetweaks.gui.events.MouseAction;
+import com.micetweaks.gui.events.DevPanelSliderEventHandler;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -34,10 +34,10 @@ public class DevPanel extends VBox implements EventHandler<Event> {
 	private StackPane   decelPane    = new StackPane();
 	private double      speed        = Assets.SPEED_DEFAULT;
 	private double      deceleration = Assets.DECELERATION_DEFAULT;
-	private Label       name;
-	private int         devID;
-	private MouseAction speedSliderAction;
-	private MouseAction decelSliderAction;
+	private Label                      name;
+	private int                        devID;
+	private DevPanelSliderEventHandler speedSliderAction;
+	private DevPanelSliderEventHandler decelSliderAction;
 
 	public DevPanel(String name, double speed, double deceleration, int id) {
 		this.speed = speed;
@@ -52,13 +52,13 @@ public class DevPanel extends VBox implements EventHandler<Event> {
 		decelLabel = new Label("" + deceleration);
 		speedBar = new ProgressBar(speed * 10);
 		decelBar = new ProgressBar(deceleration * 10);
-		speedSliderAction = new MouseAction(speedLabel, speedBar, speed);
-		decelSliderAction = new MouseAction(decelLabel, decelBar, deceleration);
+		speedSliderAction = new DevPanelSliderEventHandler(speedLabel, speedBar, speed);
+		decelSliderAction = new DevPanelSliderEventHandler(decelLabel, decelBar, deceleration);
 	}
 
 	public DevPanel(String name, int id) {
-		speedSliderAction = new MouseAction(speedLabel, speedBar, this.speed);
-		decelSliderAction = new MouseAction(decelLabel, decelBar, this.deceleration);
+		speedSliderAction = new DevPanelSliderEventHandler(speedLabel, speedBar, this.speed);
+		decelSliderAction = new DevPanelSliderEventHandler(decelLabel, decelBar, this.deceleration);
 		this.name = new Label(name);
 		this.name.setId("devName");
 		devID = id;
