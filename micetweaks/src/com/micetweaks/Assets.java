@@ -12,17 +12,22 @@ import java.io.InputStream;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Assets {
-	public static final String      TITLE         = "Micetweaks";
-	public static final String      CSS_PATH      = Main.class.getResource("css/main.css").toExternalForm();
-	public static final InputStream ICON          = Main.class.getResourceAsStream("res/icon.png");
-	public static final double      SPEED_DEFAULT = 0.500000;
-	public static  Image  TRAY_ICON;
+	public static final  String      TITLE         = "Micetweaks";
+	public static final  String      CSS_PATH      = Main.class.getResource("css/main.css").toExternalForm();
+	public static final  double      SPEED_DEFAULT = 0.500000;
+	private static final InputStream BLACK_ICON    = Main.class.getResourceAsStream("res/black-icon.png");
+	private static final InputStream WHITE_ICON    = Main.class.getResourceAsStream("res/white-icon.png");
+	public static Image BLACK_TRAY_ICON;
+	public static Image WHITE_TRAY_ICON;
+	public static javafx.scene.image.Image BLACK_FRAME_ICON = new javafx.scene.image.Image(BLACK_ICON);
+	public static javafx.scene.image.Image WHITE_FRAME_ICON = new javafx.scene.image.Image(WHITE_ICON);
 	// Parent path to this application.
 	private static String PROGRAMS_PATH;
 
 	static {
 		try {
-			TRAY_ICON = ImageIO.read(Main.class.getResource("res/icon.png"));
+			BLACK_TRAY_ICON = ImageIO.read(Main.class.getResource("res/black-icon.png"));
+			WHITE_TRAY_ICON = ImageIO.read(Main.class.getResource("res/white-icon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

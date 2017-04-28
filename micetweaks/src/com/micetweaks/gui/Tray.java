@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 class Tray {
 	private Stage frame;
 	private int   clickCounter;
+	private TrayIcon trayIcon = new TrayIcon(Assets.WHITE_TRAY_ICON);
 
 	Tray(Stage frame) {
 		this.frame = frame;
@@ -28,12 +29,15 @@ class Tray {
 		if (SystemTray.isSupported()) {
 			if (!firstRun) clickCounter += 2;
 			SystemTray tray = SystemTray.getSystemTray();
-			TrayIcon icon = new TrayIcon(Assets.TRAY_ICON);
-			icon.setImageAutoSize(true);
-			icon.setToolTip(Assets.TITLE);
-			tray.add(icon);
+			trayIcon.setImageAutoSize(true);
+			trayIcon.setToolTip(Assets.TITLE);
+			tray.add(trayIcon);
 			trayhack();
 		}
+	}
+
+	public TrayIcon getTrayIcon() {
+		return trayIcon;
 	}
 
 	private void trayhack() {
@@ -51,4 +55,5 @@ class Tray {
 			}
 		}, MouseEvent.MOUSE_EVENT_MASK);
 	}
+
 }

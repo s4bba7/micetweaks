@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -57,7 +56,7 @@ public class FirstRunDialog extends Stage {
 
 	private void setDialogProperties() {
 		setTitle("Micetweaks");
-		getIcons().add(new Image(Assets.ICON));
+		getIcons().add(Assets.WHITE_FRAME_ICON);
 		setAlwaysOnTop(true);
 		setResizable(false);
 		initStyle(StageStyle.UTILITY);

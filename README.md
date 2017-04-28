@@ -15,5 +15,9 @@ You may hide the window into system tray by clicking on the tray icon. Click aga
 
 At the first run program shows greetings helper. From now on it runs hidden in system tray.
 
-Dependency: xinput package and udevadm (should be already compiled into your system's kernel) installed in your 
-operating system.
+Dependency: libinput, xinput package and udevadm (should be already compiled into your system's kernel) installed in 
+your operating system.
+
+Tips:
+If your pointer device is not listed you need to activate "libinput" driver usually by removing one file from 
+/etc/X11/xorg.conf.d/XX-synaptics or xx-elantech and rebooting system.
