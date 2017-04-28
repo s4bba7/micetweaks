@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
- * Linux commands for USB devices.
+ * Linux commands.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
@@ -36,30 +35,23 @@ import java.util.List;
 	/**
 	 * Sets device properties by calling "xinput set-prop" command.
 	 *
-	 * @param devsID       device's ID set.
-	 * @param speed        0.3 to 1.2 recomended.
-	 * @param deceleration 1.0 to 1.8 recommended.
+	 * @param deviceID         device's ID taken from "xinput" command.
+	 * @param deviceSpeedValue device's new speed value.
 	 * @throws IOException
 	 */
-	public static void setProp(HashSet<? extends Number> devsID, double speed, double deceleration) throws IOException {
-		for (Number aDevsID : devsID) {
-			String[] command = { "xinput", "set-prop", "" + aDevsID, "Coordinate Transformation Matrix", "" + speed,
-					"0", "0", "0", "" + speed, "0", "0", "0", "" + deceleration };
-			Runtime.getRuntime().exec(command);
-		}
+	public static void setSpeedProperty(int deviceID, double deviceSpeedValue) throws IOException {
+		// Libinput accepts values between -1 and 1.
+		deviceSpeedValue = (deviceSpeedValue * 2) - 1.0;
+		String[] command = { "xinput", "set-prop", "" + deviceID, "libinput Accel Speed", "" + deviceSpeedValue };
+		Runtime.getRuntime().exec(command);
 	}
 
-	/**
-	 * Sets device properties by calling "xinput set-prop" command.
-	 *
-	 * @param id           device's ID taken from "xinput" command.
-	 * @param speed        0.3 to 1.2 recomended.
-	 * @param deceleration 1.0 to 1.8 recommended.
-	 * @throws IOException
-	 */
-	public static void setProp(int id, double speed, double deceleration) throws IOException {
-		String[] command = { "xinput", "set-prop", "" + id, "Coordinate Transformation Matrix", "" + speed, "0", "0",
-				"0", "" + speed, "0", "0", "0", "" + deceleration };
+	public static void setAccelerationState(int deviceID, boolean accelerationState) throws IOException {
+		String[] command = { "xinput", "set-prop", "" + deviceID, "libinput Accel Profile Enabled", "0", "1" };
+		if (accelerationState) {
+			command[4] = "1";
+			command[5] = "0";
+		}
 		Runtime.getRuntime().exec(command);
 	}
 
