@@ -1,4 +1,4 @@
-package com.micetweaks.configs;
+package com.micetweaks.properties;
 
 import com.micetweaks.Assets;
 import com.micetweaks.Log;
@@ -6,31 +6,32 @@ import com.micetweaks.Log;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
 /**
  * Keeps configuration of the program.
  *
  * @author Łukasz 's4bba7' Gąsiorowski.
  */
-public class ProgramConfig {
-	public final static ProgramConfig       INSTANCE = new ProgramConfig();
-	private final       String              path     = Assets.getProgramsPath() + "/config";
-	private             Map<String, String> config   = new HashMap<>();
+public class ProgramProperties {
+	public final static ProgramProperties INSTANCE = new ProgramProperties();
+	private final       String            path     = Assets.getProgramsPath() + "/config";
+	private             Properties        config   = new Properties();
 
-	private ProgramConfig() { }
+	private ProgramProperties() { }
+
+	public Properties getConfig() { return config; }
 
 	/**
 	 * Loads program's configuration file. If file doesn't exist, it'll be created.
 	 *
 	 * @return map with program's parameters.
 	 */
-	public synchronized Map<String, String> load() {
+	public synchronized Properties load() {
 		if (Files.exists(Paths.get(path))) {
 			try {
 				try (ObjectInput in = new ObjectInputStream(new FileInputStream(path))) {
-					config = (HashMap<String, String>) in.readObject();
+					config = (Properties) in.readObject();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 					Files.delete(Paths.get(path));
@@ -39,6 +40,8 @@ public class ProgramConfig {
 				e.printStackTrace();
 				Log.write("ERROR, cannot load program's configuration file: " + e.getMessage());
 			}
+		} else {
+			createDefaultProperties();
 		}
 		return config;
 	}
@@ -69,5 +72,10 @@ public class ProgramConfig {
 	 */
 	public synchronized void remove(String key) {
 		config.remove(key);
+	}
+
+	private void createDefaultProperties() {
+		config.put("first run", "true");
+		config.put("theme", "white");
 	}
 }

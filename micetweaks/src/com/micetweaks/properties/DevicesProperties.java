@@ -1,4 +1,4 @@
-package com.micetweaks.configs;
+package com.micetweaks.properties;
 
 import com.micetweaks.Assets;
 import com.micetweaks.Log;
@@ -16,12 +16,12 @@ import java.util.Map;
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
-public class DevicesConfig {
-	public final static DevicesConfig       INSTANCE = new DevicesConfig();
+public class DevicesProperties {
+	public final static DevicesProperties   INSTANCE = new DevicesProperties();
 	private final       String              path     = Assets.getProgramsPath() + "/devices";
 	private             Map<String, Device> config   = new HashMap<>();
 
-	private DevicesConfig() { }
+	private DevicesProperties() { }
 
 	public void updateConfig(Device device) {
 		config.put(device.getName(), device);

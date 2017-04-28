@@ -2,6 +2,7 @@ package com.micetweaks.gui;
 
 import com.micetweaks.Assets;
 import com.micetweaks.Log;
+import com.micetweaks.properties.ProgramProperties;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -9,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.util.Properties;
 
 /**
  * Application's main frame.
@@ -23,6 +25,7 @@ public class DevFrame extends Stage {
 	private boolean                      firstRun;
 	private Tray                         tray;
 	private javafx.scene.control.MenuBar menuBar;
+	private Properties programProperties = ProgramProperties.INSTANCE.getConfig();
 
 	/**
 	 * @param firstRun needed for AWT hack - if frame is started in minimized mode it adds +2 to clickCounter.
@@ -47,7 +50,8 @@ public class DevFrame extends Stage {
 	private void setFrameProperties() {
 		setTitle(Assets.TITLE);
 		setResizable(false);
-		getIcons().add(Assets.WHITE_FRAME_ICON);
+		if (programProperties.getProperty("theme").equalsIgnoreCase("white")) getIcons().add(Assets.WHITE_FRAME_ICON);
+		else getIcons().add(Assets.BLACK_FRAME_ICON);
 	}
 
 	private void setScene() {

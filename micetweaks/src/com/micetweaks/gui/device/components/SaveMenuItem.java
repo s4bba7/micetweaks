@@ -1,6 +1,6 @@
 package com.micetweaks.gui.device.components;
 
-import com.micetweaks.configs.DevicesConfig;
+import com.micetweaks.properties.DevicesProperties;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
@@ -19,6 +19,6 @@ public class SaveMenuItem extends MenuItem implements EventHandler<ActionEvent> 
 	}
 
 	@Override public void handle(ActionEvent event) {
-		DevicesConfig.INSTANCE.save();
+		DevicesProperties.INSTANCE.save();
 	}
 }

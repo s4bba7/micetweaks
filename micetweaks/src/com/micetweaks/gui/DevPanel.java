@@ -3,10 +3,10 @@ package com.micetweaks.gui;
 import com.micetweaks.Assets;
 import com.micetweaks.Commands;
 import com.micetweaks.Log;
-import com.micetweaks.configs.DevicesConfig;
 import com.micetweaks.devices.Device;
 import com.micetweaks.gui.events.AccelCheckBoxEventHandler;
 import com.micetweaks.gui.events.DevPanelSliderEventHandler;
+import com.micetweaks.properties.DevicesProperties;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -86,7 +86,7 @@ public class DevPanel extends VBox implements EventHandler<Event> {
 			Commands.setAccelerationState(deviceID, accelCheckBox.isSelected());
 			device.setSpeedValue(newSpeed);
 			device.setAccelerationActive(accelCheckBox.isSelected());
-			DevicesConfig.INSTANCE.updateConfig(device);
+			DevicesProperties.INSTANCE.updateConfig(device);
 		} catch (IOException e) {
 			Log.write("ERROR, cannot use this setting: " + e.getMessage());
 			e.printStackTrace();

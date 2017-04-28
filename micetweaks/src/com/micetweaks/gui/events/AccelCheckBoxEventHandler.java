@@ -1,8 +1,8 @@
 package com.micetweaks.gui.events;
 
 import com.micetweaks.Commands;
-import com.micetweaks.configs.DevicesConfig;
 import com.micetweaks.devices.Device;
+import com.micetweaks.properties.DevicesProperties;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
@@ -29,7 +29,7 @@ public class AccelCheckBoxEventHandler implements EventHandler<ActionEvent> {
 		try {
 			Commands.setAccelerationState(deviceID, checkBoxEvent.isSelected());
 			device.setAccelerationActive(checkBoxEvent.isSelected());
-			DevicesConfig.INSTANCE.updateConfig(device);
+			DevicesProperties.INSTANCE.updateConfig(device);
 		} catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Acceleration is not handled by this device.");

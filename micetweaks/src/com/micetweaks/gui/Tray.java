@@ -1,11 +1,13 @@
 package com.micetweaks.gui;
 
 import com.micetweaks.Assets;
+import com.micetweaks.properties.ProgramProperties;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.Properties;
 
 /**
  * Created on 07/11/16.
@@ -15,7 +17,8 @@ import java.awt.event.MouseEvent;
 class Tray {
 	private Stage frame;
 	private int   clickCounter;
-	private TrayIcon trayIcon = new TrayIcon(Assets.WHITE_TRAY_ICON);
+	private TrayIcon   trayIcon          = new TrayIcon(Assets.WHITE_TRAY_ICON);
+	private Properties programProperties = ProgramProperties.INSTANCE.getConfig();
 
 	Tray(Stage frame) {
 		this.frame = frame;
@@ -29,6 +32,11 @@ class Tray {
 		if (SystemTray.isSupported()) {
 			if (!firstRun) clickCounter += 2;
 			SystemTray tray = SystemTray.getSystemTray();
+
+			if (programProperties.getProperty("theme").equalsIgnoreCase("white"))
+				trayIcon.setImage(Assets.WHITE_TRAY_ICON);
+			else trayIcon.setImage(Assets.BLACK_TRAY_ICON);
+
 			trayIcon.setImageAutoSize(true);
 			trayIcon.setToolTip(Assets.TITLE);
 			tray.add(trayIcon);

@@ -1,10 +1,10 @@
 package com.micetweaks;
 
-import com.micetweaks.configs.DevicesConfig;
 import com.micetweaks.devices.*;
 import com.micetweaks.gui.DevFrame;
 import com.micetweaks.gui.DevPanel;
 import com.micetweaks.gui.DevPanelModifier;
+import com.micetweaks.properties.DevicesProperties;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -30,7 +30,7 @@ public class Monitor implements Runnable {
 		this.frame = (DevFrame) frame;
 		mainPanel = this.frame.getPanel();
 		panelModifier = new DevPanelModifier(mainPanel);
-		devicesConfigMap = DevicesConfig.INSTANCE.load();
+		devicesConfigMap = DevicesProperties.INSTANCE.load();
 	}
 
 	@Override public void run() {
@@ -75,7 +75,7 @@ public class Monitor implements Runnable {
 				device.setSpeedValue(speed);
 				boolean acceleration = devicesConfigMap.get(e.getKey()).isAccelerationActive();
 				device.setAccelerationActive(acceleration);
-			} else { DevicesConfig.INSTANCE.updateConfig(device); }
+			} else { DevicesProperties.INSTANCE.updateConfig(device); }
 
 			final DevPanel devPanel = new DevPanel(device, deviceID);
 			devPanel.setupComponents();

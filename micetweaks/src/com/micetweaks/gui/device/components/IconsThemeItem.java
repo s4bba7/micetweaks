@@ -1,6 +1,7 @@
 package com.micetweaks.gui.device.components;
 
 import com.micetweaks.gui.Theme;
+import com.micetweaks.properties.ProgramProperties;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
@@ -37,5 +38,6 @@ public class IconsThemeItem extends MenuItem implements EventHandler<ActionEvent
 				Theme.setBlackIcons(stage);
 				break;
 		}
+		ProgramProperties.INSTANCE.add("theme", option.toLowerCase());
 	}
 }
