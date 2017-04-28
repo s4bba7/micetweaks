@@ -5,10 +5,13 @@ import com.micetweaks.Commands;
 import com.micetweaks.Log;
 import com.micetweaks.configs.DevicesConfig;
 import com.micetweaks.devices.Device;
+import com.micetweaks.gui.events.AccelCheckBoxEventHandler;
 import com.micetweaks.gui.events.DevPanelSliderEventHandler;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
@@ -19,82 +22,57 @@ import javax.swing.*;
 import java.io.IOException;
 
 /**
- * Stores com.micetweaks.devices regulators.
+ * Stores device regulators.
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DevPanel extends VBox implements EventHandler<Event> {
-	private Slider      speedSlider  = new Slider(1, 100, Assets.SPEED_DEFAULT * 10);
-	private Slider      decelSlider  = new Slider(1, 100, Assets.DECELERATION_DEFAULT * 10);
-	private Label       speedLabel   = new Label("" + Assets.SPEED_DEFAULT);
-	private Label       decelLabel   = new Label("" + Assets.DECELERATION_DEFAULT);
-	private ProgressBar speedBar     = new ProgressBar(Assets.SPEED_DEFAULT * 10);
-	private ProgressBar decelBar     = new ProgressBar(Assets.DECELERATION_DEFAULT * 10);
-	private StackPane   speedPane    = new StackPane();
-	private StackPane   decelPane    = new StackPane();
-	private double      speed        = Assets.SPEED_DEFAULT;
-	private double      deceleration = Assets.DECELERATION_DEFAULT;
-	private Label                      name;
-	private int                        devID;
-	private DevPanelSliderEventHandler speedSliderAction;
-	private DevPanelSliderEventHandler decelSliderAction;
+	private Slider      speedSlider = new Slider(0.01, 1.00, Assets.SPEED_DEFAULT);
+	private Label       speedLabel  = new Label("" + Assets.SPEED_DEFAULT);
+	private ProgressBar speedBar    = new ProgressBar(Assets.SPEED_DEFAULT);
+	private StackPane   speedPane   = new StackPane();
+	private Label                      deviceNameLabel;
+	private int                        deviceID;
+	private DevPanelSliderEventHandler speedSliderEventHandler;
+	private CheckBox accelCheckBox = new CheckBox("Enable acceleration");
+	private EventHandler<ActionEvent> accelCheckBoxEventHandler;
+	private Device                    device;
 
-	public DevPanel(String name, double speed, double deceleration, int id) {
-		this.speed = speed;
-		this.deceleration = deceleration;
-		this.name = new Label(name);
-		this.name.setId("devName");
-		devID = id;
-
-		speedSlider = new Slider(1, 100, speed * 10);
-		decelSlider = new Slider(1, 100, deceleration * 10);
-		speedLabel = new Label("" + speed);
-		decelLabel = new Label("" + deceleration);
-		speedBar = new ProgressBar(speed * 10);
-		decelBar = new ProgressBar(deceleration * 10);
-		speedSliderAction = new DevPanelSliderEventHandler(speedLabel, speedBar, speed);
-		decelSliderAction = new DevPanelSliderEventHandler(decelLabel, decelBar, deceleration);
-	}
-
-	public DevPanel(String name, int id) {
-		speedSliderAction = new DevPanelSliderEventHandler(speedLabel, speedBar, this.speed);
-		decelSliderAction = new DevPanelSliderEventHandler(decelLabel, decelBar, this.deceleration);
-		this.name = new Label(name);
-		this.name.setId("devName");
-		devID = id;
+	public DevPanel(Device device, int deviceID) {
+		if (device.getSpeedValue() <= 0) device.setSpeedValue(Assets.SPEED_DEFAULT);
+		this.device = device;
+		this.deviceID = deviceID;
 	}
 
 	public void setupComponents() {
 		setLayout();
+
+		deviceNameLabel = new Label(device.getName());
+		deviceNameLabel.setId("devName");
+		speedSlider.setValue(device.getSpeedValue());
+		speedLabel = new Label("" + device.getSpeedValue());
+		speedBar = new ProgressBar(device.getSpeedValue());
+		speedSliderEventHandler = new DevPanelSliderEventHandler(speedLabel, speedBar, device.getSpeedValue());
+		accelCheckBoxEventHandler = new AccelCheckBoxEventHandler(device, deviceID);
+
 		speedLabel.setId("values");
 		speedLabel.setUserData("Speed: ");
-		speedLabel.setText("" + speedLabel.getUserData() + speed);
+		speedLabel.setText("" + speedLabel.getUserData() + device.getSpeedValue());
 		speedLabel.setMouseTransparent(true);
 
-		decelLabel.setId("values");
-		decelLabel.setUserData("Deceleration: ");
-		decelLabel.setText("" + decelLabel.getUserData() + deceleration);
-		decelLabel.setMouseTransparent(true);
+		speedBar.setProgress(device.getSpeedValue());
 
-		speedBar.setProgress(speed / 10.0);
-
-		decelBar.setProgress(deceleration / 10.0);
-
-		speedSlider.setValue((int) (this.speed * 10));
-		speedSlider.setOnMouseDragged(speedSliderAction);
-		speedSlider.setOnMousePressed(speedSliderAction);
+		speedSlider.setValue(device.getSpeedValue());
+		speedSlider.setOnMouseDragged(speedSliderEventHandler);
+		speedSlider.setOnMousePressed(speedSliderEventHandler);
 		speedSlider.setOnMouseReleased(this);
 
 		speedPane.getChildren().addAll(speedBar, speedSlider);
 
-		decelSlider.setValue((int) (this.deceleration * 10));
-		decelSlider.setOnMouseDragged(decelSliderAction);
-		decelSlider.setOnMousePressed(decelSliderAction);
-		decelSlider.setOnMouseReleased(this);
+		accelCheckBox.setSelected(device.isAccelerationActive());
+		accelCheckBox.setOnAction(accelCheckBoxEventHandler);
 
-		decelPane.getChildren().addAll(decelBar, decelSlider);
-
-		getChildren().addAll(name, speedLabel, speedPane, decelLabel, decelPane);
+		getChildren().addAll(deviceNameLabel, speedLabel, speedPane, accelCheckBox);
 	}
 
 	private void setLayout() {
@@ -102,11 +80,13 @@ public class DevPanel extends VBox implements EventHandler<Event> {
 	}
 
 	@Override public void handle(Event event) {
-		Device props = DevicesConfig.INSTANCE.getConfig().get(name.getText());
 		try {
-			Commands.setProp(devID, speedSliderAction.getValue(), decelSliderAction.getValue());
-			props.setSpeed(speedSliderAction.getValue());
-			props.setDeceleration(decelSliderAction.getValue());
+			double newSpeed = speedSliderEventHandler.getValue();
+			Commands.setSpeedProperty(deviceID, newSpeed);
+			Commands.setAccelerationState(deviceID, accelCheckBox.isSelected());
+			device.setSpeedValue(newSpeed);
+			device.setAccelerationActive(accelCheckBox.isSelected());
+			DevicesConfig.INSTANCE.updateConfig(device);
 		} catch (IOException e) {
 			Log.write("ERROR, cannot use this setting: " + e.getMessage());
 			e.printStackTrace();
