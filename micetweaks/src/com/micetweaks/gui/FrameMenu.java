@@ -1,8 +1,7 @@
 package com.micetweaks.gui;
 
-import com.micetweaks.gui.device.components.BlackIconsThemeItem;
+import com.micetweaks.gui.device.components.IconsThemeItem;
 import com.micetweaks.gui.device.components.SaveMenuItem;
-import com.micetweaks.gui.device.components.WhiteIconsThemeItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -17,15 +16,14 @@ import java.awt.*;
  */
 public class FrameMenu extends MenuBar {
 	private Menu optionsMenu = new Menu("Options");
-
 	private Menu themeMenuItem = new Menu("Theme");
 	private MenuItem blackIconsThemeItem;
 	private MenuItem whiteIconsThemeItem;
 	private MenuItem saveConfigItem = new SaveMenuItem();
 
 	public FrameMenu(TrayIcon trayIcon, Stage stage) {
-		blackIconsThemeItem = new BlackIconsThemeItem(trayIcon, stage);
-		whiteIconsThemeItem = new WhiteIconsThemeItem(trayIcon, stage);
+		blackIconsThemeItem = new IconsThemeItem("black", trayIcon, stage);
+		whiteIconsThemeItem = new IconsThemeItem("white", trayIcon, stage);
 		createMenubarOptions();
 		createOptionsItems();
 	}
