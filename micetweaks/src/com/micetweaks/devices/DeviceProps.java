@@ -8,9 +8,9 @@ import java.io.Serializable;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DeviceProps implements Serializable, Device {
-	private String name;
-	private double speed;
-	private double deceleration;
+	private String  name;
+	private double  speedValue;
+	private boolean isAccelerationActive;
 
 	/**
 	 * @param name device's name.
@@ -23,20 +23,11 @@ public class DeviceProps implements Serializable, Device {
 
 	@Override public void setName(String name) { this.name = name; }
 
-	@Override public double getSpeed() {
-		return speed;
-	}
+	@Override public double getSpeedValue() { return speedValue; }
 
-	@Override public void setSpeed(double speed) {
-		this.speed = speed;
-	}
+	@Override public void setSpeedValue(double speedValue) { this.speedValue = speedValue; }
 
-	@Override public double getDeceleration() {
-		return deceleration;
-	}
+	@Override public boolean isAccelerationActive() { return isAccelerationActive; }
 
-	@Override public void setDeceleration(double deceleration) {
-		this.deceleration = deceleration;
-	}
-
+	@Override public void setAccelerationActive(boolean state) { isAccelerationActive = state; }
 }

@@ -8,11 +8,11 @@ public interface Device {
 
 	void setName(String name);
 
-	double getSpeed();
+	double getSpeedValue();
 
-	void setSpeed(double speed);
+	void setSpeedValue(double speedValue);
 
-	double getDeceleration();
+	boolean isAccelerationActive();
 
-	void setDeceleration(double deceleration);
+	void setAccelerationActive(boolean state);
 }
