@@ -66,6 +66,8 @@ public class Monitor implements Runnable {
 	 * Updates devices list of the programs frame.
 	 */
 	private void updateDeviceList() {
+		Platform.runLater(() -> panelModifier.clear());
+
 		deviceObserver.getActiveDevices().entrySet().stream().forEach(e -> {
 			Device device = new DeviceProps(e.getKey());
 			int deviceID = e.getValue();
@@ -82,7 +84,6 @@ public class Monitor implements Runnable {
 			devPanel.handle(null);
 
 			Platform.runLater(() -> {
-				panelModifier.clear();
 				panelModifier.add(devPanel);
 				frame.sizeToScene();
 			});
