@@ -1,10 +1,7 @@
 package com.micetweaks;
 
 import com.micetweaks.configs.DevicesConfig;
-import com.micetweaks.devices.ActiveDeviceObserver;
-import com.micetweaks.devices.Device;
-import com.micetweaks.devices.DeviceObserver;
-import com.micetweaks.devices.HotPlug;
+import com.micetweaks.devices.*;
 import com.micetweaks.gui.DevFrame;
 import com.micetweaks.gui.DevPanel;
 import com.micetweaks.gui.DevPanelModifier;
@@ -69,27 +66,26 @@ public class Monitor implements Runnable {
 	 * Updates devices list of the programs frame.
 	 */
 	private void updateDeviceList() {
-		Platform.runLater(() -> {
-			panelModifier.clear();
+		deviceObserver.getActiveDevices().entrySet().stream().forEach(e -> {
+			Device device = new DeviceProps(e.getKey());
+			int deviceID = e.getValue();
 
-			deviceObserver.getActiveDevices().entrySet().stream().forEach(e -> {
-				String devName = e.getKey();
-				int id = e.getValue();
-				DevPanel devPanel = null;
+			if (devicesConfigMap.get(e.getKey()) != null) {
+				double speed = devicesConfigMap.get(e.getKey()).getSpeedValue();
+				device.setSpeedValue(speed);
+				boolean acceleration = devicesConfigMap.get(e.getKey()).isAccelerationActive();
+				device.setAccelerationActive(acceleration);
+			} else { DevicesConfig.INSTANCE.updateConfig(device); }
 
-				if (devicesConfigMap.get(e.getKey()) != null) {
-					double speed = devicesConfigMap.get(e.getKey()).getSpeed();
-					double deceleration = devicesConfigMap.get(e.getKey()).getDeceleration();
-					devPanel = new DevPanel(devName, speed, deceleration, id);
-				} else {
-					DevicesConfig.INSTANCE.createConfig(devName);
-					devPanel = new DevPanel(devName, id);
-				}
-				devPanel.setupComponents();
-				devPanel.handle(null);
+			final DevPanel devPanel = new DevPanel(device, deviceID);
+			devPanel.setupComponents();
+			devPanel.handle(null);
+
+			Platform.runLater(() -> {
+				panelModifier.clear();
 				panelModifier.add(devPanel);
+				frame.sizeToScene();
 			});
-			frame.sizeToScene();
 		});
 	}
 }
