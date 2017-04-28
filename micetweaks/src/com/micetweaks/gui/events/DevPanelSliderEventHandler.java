@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class DevPanelSliderEventHandler implements EventHandler<MouseEvent> {
-	private DecimalFormat format = new DecimalFormat("#0.0");
+	private DecimalFormat format = new DecimalFormat("#0.00");
 	private Label       label;
 	private double      value;
 	private ProgressBar bar;
@@ -27,12 +27,15 @@ public class DevPanelSliderEventHandler implements EventHandler<MouseEvent> {
 
 	@Override public void handle(MouseEvent e) {
 		Slider slider = (Slider) e.getSource();
-		value = slider.getValue() / 10.0;
+		value = slider.getValue();
 		label.setText("" + label.getUserData() + format.format(value));
-		bar.setProgress(value / 10.0);
+		bar.setProgress(value);
 	}
 
 	public double getValue() {
-		return Math.round(value * 10.0) / 10.0;
+		value *= 100;
+		value = Math.round(value);
+		value /= 100;
+		return value;
 	}
 }
