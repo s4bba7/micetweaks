@@ -3,7 +3,6 @@ package com.micetweaks.configs;
 import com.micetweaks.Assets;
 import com.micetweaks.Log;
 import com.micetweaks.devices.Device;
-import com.micetweaks.devices.DeviceProps;
 
 import javax.swing.*;
 import java.io.*;
@@ -24,12 +23,8 @@ public class DevicesConfig {
 
 	private DevicesConfig() { }
 
-	public Map<String, Device> getConfig() {
-		return config;
-	}
-
-	public void createConfig(String devName) {
-		config.put(devName, new DeviceProps(devName));
+	public void updateConfig(Device device) {
+		config.put(device.getName(), device);
 	}
 
 	/**

@@ -20,6 +20,6 @@ public class DeviceChecker {
 
 	public static boolean isMouse(int id) {
 		List<String> deviceProps = Commands.getDeviceProps(id);
-		return deviceProps.stream().anyMatch(s -> s.toLowerCase().contains("accel speed"));
+		return deviceProps.stream().anyMatch(s -> s.toLowerCase().contains("libinput accel speed"));
 	}
 }

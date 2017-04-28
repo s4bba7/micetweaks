@@ -2,6 +2,7 @@ package com.micetweaks.gui;
 
 import com.micetweaks.Assets;
 import com.micetweaks.Log;
+import com.micetweaks.gui.device.components.SaveButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

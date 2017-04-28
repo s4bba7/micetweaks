@@ -1,4 +1,4 @@
-package com.micetweaks.gui;
+package com.micetweaks.gui.device.components;
 
 import com.micetweaks.configs.DevicesConfig;
 import javafx.event.Event;
@@ -10,10 +10,10 @@ import javafx.scene.control.Button;
  *
  * @author Łukasz 's4bba7' Gąsiorowski
  */
-class SaveButton extends Button implements EventHandler<Event> {
+public class SaveButton extends Button implements EventHandler<Event> {
 	private String title = "Save config";
 
-	SaveButton() {
+	public SaveButton() {
 		setText(title);
 		setFocusTraversable(false);
 		setOnMouseClicked(this);

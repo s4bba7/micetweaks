@@ -12,11 +12,10 @@ import java.io.InputStream;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 public class Assets {
-	public static final String      TITLE                = "Micetweaks";
-	public static final String      CSS_PATH             = Main.class.getResource("css/main.css").toExternalForm();
-	public static final InputStream ICON                 = Main.class.getResourceAsStream("res/icon.png");
-	public static final double      SPEED_DEFAULT        = 2.6;
-	public static final double      DECELERATION_DEFAULT = 5.2;
+	public static final String      TITLE         = "Micetweaks";
+	public static final String      CSS_PATH      = Main.class.getResource("css/main.css").toExternalForm();
+	public static final InputStream ICON          = Main.class.getResourceAsStream("res/icon.png");
+	public static final double      SPEED_DEFAULT = 0.500000;
 	public static  Image  TRAY_ICON;
 	// Parent path to this application.
 	private static String PROGRAMS_PATH;
