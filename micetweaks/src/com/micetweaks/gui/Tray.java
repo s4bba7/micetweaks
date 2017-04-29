@@ -15,14 +15,12 @@ import java.util.Properties;
  * @author Łukasz 's4bba7' Gąsiorowski
  */
 class Tray {
-	private Stage frame;
-	private int   clickCounter;
-	private TrayIcon   trayIcon          = new TrayIcon(Assets.WHITE_TRAY_ICON);
+	private Stage    frame;
+	private int      clickCounter;
+	private TrayIcon trayIcon;
 	private Properties programProperties = ProgramProperties.INSTANCE.getConfig();
 
-	Tray(Stage frame) {
-		this.frame = frame;
-	}
+	Tray(Stage frame) { this.frame = frame; }
 
 	/**
 	 * @param firstRun needed for AWT hack - if frame is started in minimized mode it adds +2 to clickCounter.
@@ -34,8 +32,8 @@ class Tray {
 			SystemTray tray = SystemTray.getSystemTray();
 
 			if (programProperties.getProperty("theme").equalsIgnoreCase("white"))
-				trayIcon.setImage(Assets.WHITE_TRAY_ICON);
-			else trayIcon.setImage(Assets.BLACK_TRAY_ICON);
+				trayIcon = new TrayIcon(Assets.WHITE_TRAY_ICON);
+			else trayIcon = new TrayIcon(Assets.BLACK_TRAY_ICON);
 
 			trayIcon.setImageAutoSize(true);
 			trayIcon.setToolTip(Assets.TITLE);

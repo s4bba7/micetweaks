@@ -11,9 +11,10 @@ Application detects the moment when device is plugged into the USB port and sets
 At the beginning it detects all connected pointers (like mice and touchpads) and shows window with those devices. There you can adjust it's speed and acceleration.
 Every change is activated immediately. To save configuration just click "Save config" button.
 
-You may hide the window into system tray by clicking on the tray icon. Click again to show it back on.
+You may hide the window into system tray (if supported by operation system) by clicking on the tray icon. Click again
+ to show it back on.
 
-At the first run program shows greetings helper. From now on it runs hidden in system tray.
+At the first run program shows greetings helper. From now on it runs hidden in system tray (if supported).
 
 Dependency: libinput, xinput package and udevadm (should be already compiled into your system's kernel) installed in 
 your operating system.

@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -49,7 +50,7 @@ public class Main extends Application {
 			Stage firstRunDialog = new FirstRunDialog();
 			firstRunDialog.showAndWait();
 			frame.show();
-		}
+		} else if (!SystemTray.isSupported()) frame.show();
 
 		frame.setOnCloseRequest(e -> {
 			// Save program's configuration and exit when window is closed.
