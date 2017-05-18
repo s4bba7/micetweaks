@@ -3,7 +3,7 @@ Mouse and touchpad sensitivity setter for Linux.
 
 Download: http://gasionet.pl/dlmicetweaks.php
 
-![micetweaks](http://i.imgur.com/NguE3ZC.png)
+![micetweaks](http://i.imgur.com/sKxkn9e.png)
 
 Application detects the moment when device is plugged into the USB port and sets individual config (speed and acceleration) to it.  
 "Must have app" especially when using <B>KDE</B>, where you can set mouse acceleration only. 
