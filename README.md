@@ -7,7 +7,7 @@ Download: http://gasionet.pl/app/micetweaks.tar.gz
 
 ## Introduction
 Application detects the moment when device is plugged into the USB port and sets individual config (speed and acceleration) to it.  
-"Must have app" especially when using <B>KDE</B>, where you can set mouse acceleration only. 
+"Must have app" especially when using <B>KDE</B>, w̶h̶e̶r̶e̶ ̶y̶o̶u̶ ̶c̶a̶n̶ ̶s̶e̶t̶ ̶m̶o̶u̶s̶e̶ ̶a̶c̶c̶e̶l̶e̶r̶a̶t̶i̶o̶n̶ ̶o̶n̶l̶y̶.̶ (In recent version you may change pointer speed and set acceleration profile but for every mice globally).
 
 At the beginning it detects all connected pointers (like mice and touchpads) and shows window with those devices. There you can adjust it's speed and set acceleration on or off.
 Every change is activated immediately.
